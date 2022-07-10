@@ -1,0 +1,37 @@
+# 让你的网站使用cloudflare全球加速
+
+
+使用免费版本的cloudflare在大陆都被称为cdn减速，但是从我实际使用来说，减速效果不明显，但是却可以大大提升全球的访问速度。设置合理可以严重降低服务器的负担，对于服务器配置不好，vps本身直连国内速度本身就很慢，以及vps ip被封的人来说，是个神器。
+
+这里，就如何设置**wordpress**来说下cloudflare的基础设置。先放个效果图，可以看到绝大多数网站请求都使用了cloudflare的cache。
+
+[![](images/03.jpg)](https://lijie.org/wp-content/uploads/2019/10/03.jpg)
+
+深色是使用的cache，浅色是从我的服务器处理的请求
+
+首先，注册[cloudflare](https://www.cloudflare.com)，然后修改你域名的两个dns为cloudflare提供给你的。一般十分钟搞定。
+
+打开cloudflare管理界面，可以看到上面有不少可设置选项，在上面先找到page rules。
+
+[![](images/01-2-1024x114.png)](https://lijie.org/wp-content/uploads/2019/10/01-2.png)
+
+找到Page rules
+
+免费版本可以使用三条规则，对于wordpress，我感觉两条就足够了。
+
+[![](images/02.jpg)](https://lijie.org/wp-content/uploads/2019/10/02.jpg)
+
+第一条告诉cloudflare不缓存wordpress的管理员界面，并且应用上了几条cloudflare的安全检查，可以阻止一些有危险行为的访问。 如果你不是wordpress程序，可以替换成你使用的程序的管理uri。
+
+第二条，开启除第一条以外所有内容的缓存，缓存时间7天，这样可以极大减轻服务器的负担。尤其是图片，js，css文件等，效果很明显。假如你对某篇文章进行了编辑，可以找到Caching，点击下面的Custom Purge，输入要强制更新的页面地址，这样cloudflare会获取最新修改后的页面，然后在你自己浏览器此页面的URL后面添加个?号，让浏览器也强制刷新缓存。最后记得把首页缓存也purge一下。但是很多清况下，即使你purge了页面，清除了浏览器缓存，但是页面依然没更新，这一点比较恼人。
+
+注意，Rules是有顺序关系的，不能搞乱。Page rules设置就此完毕。
+
+其余的cloudflare的设置，这里提一下
+
+- 可以将SSL/TLS中Edge Certificates下面的Always Use HTTPS打开。并且将HSTS打开。Automatic HTTPS Rewrites打开。
+- 将Speed中Optimization下面的Auto Minify右侧的Javascript, CSS, HTML全部勾选，并且打开下面的Brotli和Rocket Loader。
+- 将Caching下面的Always Online打开，这样你的服务器短期出现故障，比如重启之类的活动时候，网站访问几乎不受影响。
+
+关于网站使用cloudflare是基本设置就是这样了，其余的要么收费，要么我也看不懂。后续可能会研究下Firewall及Workers的详细用法。网上关于网站测速评分工具看看就好，毕竟这个和你网站使用的图片，模板，插件有很大关系。
+
