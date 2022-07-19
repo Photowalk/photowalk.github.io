@@ -2,7 +2,7 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
-            <loc>https://photowalk.github.io/</loc><lastmod>2022-06-12T17:55:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority><xhtml:link
+            <loc>https://photowalk.github.io/</loc><lastmod>2022-06-12T17:55:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
                         rel="alternate"
                         hreflang="zh-cn"
                         href="https://photowalk.github.io/zh-cn/"
@@ -11,9 +11,9 @@
                     hreflang="en"
                     href="https://photowalk.github.io/"
                     /></url><url>
-            <loc>https://photowalk.github.io/posts/</loc><lastmod>2022-06-12T17:55:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
-            <loc>https://photowalk.github.io/tags/sudo/</loc><lastmod>2022-06-12T17:55:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
-            <loc>https://photowalk.github.io/tags/</loc><lastmod>2022-06-12T17:55:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority><xhtml:link
+            <loc>https://photowalk.github.io/posts/</loc><lastmod>2022-06-12T17:55:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://photowalk.github.io/tags/sudo/</loc><lastmod>2022-06-12T17:55:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://photowalk.github.io/tags/</loc><lastmod>2022-06-12T17:55:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
                         rel="alternate"
                         hreflang="zh-cn"
                         href="https://photowalk.github.io/zh-cn/tags/"
@@ -22,12 +22,12 @@
                     hreflang="en"
                     href="https://photowalk.github.io/tags/"
                     /></url><url>
-            <loc>https://photowalk.github.io/tags/ubuntu/</loc><lastmod>2022-06-12T17:55:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
-            <loc>https://photowalk.github.io/tags/vps/</loc><lastmod>2022-06-12T17:55:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
-            <loc>https://photowalk.github.io/what-is-sudo/</loc><lastmod>2022-06-12T17:55:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
-            <loc>https://photowalk.github.io/tags/hugo/</loc><lastmod>2022-06-11T21:15:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
-            <loc>https://photowalk.github.io/moving-to-hugo/</loc><lastmod>2022-06-11T21:15:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
-            <loc>https://photowalk.github.io/tags/wordpress/</loc><lastmod>2022-06-11T21:15:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
+            <loc>https://photowalk.github.io/tags/ubuntu/</loc><lastmod>2022-06-12T17:55:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://photowalk.github.io/tags/vps/</loc><lastmod>2022-06-12T17:55:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://photowalk.github.io/what-is-sudo/</loc><lastmod>2022-06-12T17:55:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://photowalk.github.io/tags/hugo/</loc><lastmod>2022-06-11T21:15:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://photowalk.github.io/moving-to-hugo/</loc><lastmod>2022-06-11T21:15:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://photowalk.github.io/tags/wordpress/</loc><lastmod>2022-06-11T21:15:13&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://photowalk.github.io/tags/fediverse/</loc><lastmod>2022-05-24T00:00:00&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://photowalk.github.io/tags/matrix/</loc><lastmod>2022-05-24T00:00:00&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://photowalk.github.io/setting-up-your-own-matrix-synapse-service-on-vps/</loc><lastmod>2022-05-24T00:00:00&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
