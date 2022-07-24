@@ -2,7 +2,7 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
-            <loc>https://sudo.by/</loc><lastmod>2022-07-24T10:01:10&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://sudo.by/</loc><lastmod>2022-06-12T17:55:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
                         rel="alternate"
                         hreflang="zh-cn"
                         href="https://sudo.by/zh-cn/"
@@ -11,8 +11,7 @@
                     hreflang="en"
                     href="https://sudo.by/"
                     /></url><url>
-            <loc>https://sudo.by/posts/</loc><lastmod>2022-07-24T10:01:10&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://sudo.by/testt/</loc><lastmod>2022-07-24T10:01:10&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://sudo.by/posts/</loc><lastmod>2022-06-12T17:55:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://sudo.by/tags/sudo/</loc><lastmod>2022-06-12T17:55:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://sudo.by/tags/</loc><lastmod>2022-06-12T17:55:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
                         rel="alternate"

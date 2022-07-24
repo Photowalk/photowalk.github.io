@@ -110,26 +110,6 @@
         alt=" "
         title=" " width="647" height="610" /></a></div><div class="home-subtitle"><div id="id-1" class="typeit"></div></div><div class="links"><a href="https://github.com/xxxx" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github fa-fw" aria-hidden="true"></i></a><a href="https://twitter.com/xxxx" title="Twitter" target="_blank" rel="noopener noreffer me"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="https://www.instagram.com/xxxx" title="Instagram" target="_blank" rel="noopener noreffer me"><i class="fab fa-instagram fa-fw" aria-hidden="true"></i></a><a href="https://facebook.com/xxxx" title="facebook" target="_blank" rel="noopener noreffer me"><i class="fab fa-facebook fa-fw" aria-hidden="true"></i></a><a href="https://t.me/xxxx" title="Telegram" target="_blank" rel="noopener noreffer me"><i class="fab fa-telegram-plane fa-fw" aria-hidden="true"></i></a><a href="https://www.youtube.com/user/xxxx" title="YouTube" target="_blank" rel="noopener noreffer me"><i class="fab fa-youtube fa-fw" aria-hidden="true"></i></a><a href="https://mastodon.technology/@xxxx" title="Mastodon" target="_blank" rel="noopener noreffer me"><i class="fab fa-mastodon fa-fw" aria-hidden="true"></i></a><a href="mailto:xxxx@xxxx.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw" aria-hidden="true"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw" aria-hidden="true"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><div class="featured-image-preview">
-            <a href="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/"><img
-        class="lazyload"
-        src="/svg/loading.min.svg"
-        data-src="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/featured-image.png"
-        data-srcset="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/featured-image.png, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/featured-image.png 1.5x, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/featured-image.png 2x"
-        data-sizes="auto"
-        alt="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/featured-image.png"
-        title="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/featured-image.png" /></a>
-        </div><h1 class="single-title" itemprop="name headline">
-        <a href="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/">降低CPU使用率 让Plex客户端解码</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Tristan</a></span>&nbsp;<span class="post-publish">published on <time datetime="2020-04-09">2020-04-09</time></span></div><div class="content">1. 硬件介绍 Plex给人的印象是需要服务器端转码，这给很多人造成了错误的印象，前几天入手了终身Plex Pass，随即折腾起来，发现Plex完全可以像Kodi一样使用客户端解码，降低服务器端的CPU占用率，加上Plex本身漂亮的UI界面和强大的数据刮削能力，Plex在Emby(收费), Jellyfin(全免费), 和Kodi(全免费，太丑，弃)的竞争中，完全不落下风。
-我的硬件：一台小的Home Box，配置是i3-7100u(Intel Kaby Lake), 8G内存。一台家用NAS，QNAP NAS 453B mini一台，10G内存, 处理器是J3455(Intel Apollo Lake), 8G内存。
-处理器是i3-7100的Home Box安装了Esxi，上面安装了Openwrt和Ubuntu server（ubuntu里又装了Plex服务器端）以及其它系统。也就是所说的软路由中安装Plex服务器。
-Ubuntu server和QNAP上都安装了Plex server，这里使用Ubuntu中的Plex server来测试，NAS仅仅作为一个存储设备。
-i3-7100U的核显是HD 620, 而QNAP NAS的处理器是J3455，核显是HD 500。两款核显均支持4K分辨率下H.264的转码transcoding（包括解码decoding和编码encoding），而对于, H.265(HEVC)编码，只有HD620的也就是7100u支持转码，J3455仅仅支持解码（支持播放）。具体核显的性能区别可以看这里以及这里。所以不论是自己组件NAS还是购买现成的NAS，CPU是非常关键的，CPU越新，核显越新，才能更大幅度的降低CPU的使用率。
-2.开始 2.1 软路由Ubuntu系统挂载NAS硬盘 首先在Ubuntu中挂载NAS中共享的电影文件夹：
-1 2 3 4 5 apt install nfs-common #安装nfs showmount -e 192.168.1.99 #看下nas哪些目录是共享可挂载的。 mkdir /mnt/qnap #在ubuntu中创建文件夹qnap，用来挂在qnap的共享文件夹 mount 192.168.1.99:/电影共享 /mnt/qnap #将nas共享的电影共享目录挂在到linux的qnap目录上。 apt install ffmpeg intel-gpu-tools #安装解码器和查看intel显卡占用率程序 2.2 显卡直通设置 ESXI中先允许核显直通修改Ubuntu server的显卡信息，将默认的修改为FALSE修改Ubuntu配置，添加PCI设备，然后选择刚才直通的显卡即可进入Ubuntu后，运行lspci | grep -i vga，发现核显直通成功随后安装Plex的Ubuntu服务器端和手机或者PC的客户端，此处略过&hellip;，需要注意的是，媒体文件夹选择刚才挂载的NAS文件夹即可。</div><div class="post-footer">
-        <a href="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/emby/">emby</a>,&nbsp;<a href="/tags/esxi/">esxi</a>,&nbsp;<a href="/tags/homelab/">homelab</a>,&nbsp;<a href="/tags/htpc/">htpc</a>,&nbsp;<a href="/tags/jellyfin/">jellyfin</a>,&nbsp;<a href="/tags/kodi/">kodi</a>,&nbsp;<a href="/tags/nas/">nas</a>,&nbsp;<a href="/tags/plex/">plex</a>,&nbsp;<a href="/tags/qnap/">qnap</a>,&nbsp;<a href="/tags/ubuntu/">ubuntu</a>,&nbsp;<a href="/tags/%E8%BD%AF%E8%B7%AF%E7%94%B1/">软路由</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><div class="featured-image-preview">
             <a href="/%E4%BD%BF%E7%94%A8qnap-nas%E7%9A%84hbs-3%E5%90%8C%E6%AD%A5onedrive-googledrive%E7%AD%89%E7%BD%91%E7%9B%98%E5%86%85%E5%AE%B9/"><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -212,6 +192,24 @@ Please choose whether or not to redirect HTTP traffic to HTTPS, removing HTTP ac
 可以将SSL/TLS中Edge Certificates下面的Always Use HTTPS打开。并且将HSTS打开。Automatic HTTPS Rewrites打开。 将Speed中Optimization下面的Auto Minify右侧的Javascript, CSS, HTML全部勾选，并且打开下面的Brotli和Rocket Loader。 将Caching下面的Always Online打开，这样你的服务器短期出现故障，比如重启之类的活动时候，网站访问几乎不受影响。 关于网站使用cloudflare是基本设置就是这样了，其余的要么收费，要么我也看不懂。后续可能会研究下Firewall及Workers的详细用法。网上关于网站测速评分工具看看就好，毕竟这个和你网站使用的图片，模板，插件有很大关系。</div><div class="post-footer">
         <a href="/%E8%AE%A9%E4%BD%A0%E7%9A%84%E7%BD%91%E7%AB%99%E4%BD%BF%E7%94%A8cloudflare%E5%85%A8%E7%90%83%E5%8A%A0%E9%80%9F/">Read More</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/cloudflare/">cloudflare</a>,&nbsp;<a href="/tags/vps/">vps</a>,&nbsp;<a href="/tags/wordpress/">wordpress</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><div class="featured-image-preview">
+            <a href="/%E5%8D%87%E7%BA%A7esxi%E5%88%B0%E6%9C%80%E6%96%B0%E7%9A%84u3%E7%89%88%E6%9C%AC/"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/%E5%8D%87%E7%BA%A7esxi%E5%88%B0%E6%9C%80%E6%96%B0%E7%9A%84u3%E7%89%88%E6%9C%AC/images/featured-image.jpg"
+        data-srcset="/%E5%8D%87%E7%BA%A7esxi%E5%88%B0%E6%9C%80%E6%96%B0%E7%9A%84u3%E7%89%88%E6%9C%AC/images/featured-image.jpg, /%E5%8D%87%E7%BA%A7esxi%E5%88%B0%E6%9C%80%E6%96%B0%E7%9A%84u3%E7%89%88%E6%9C%AC/images/featured-image.jpg 1.5x, /%E5%8D%87%E7%BA%A7esxi%E5%88%B0%E6%9C%80%E6%96%B0%E7%9A%84u3%E7%89%88%E6%9C%AC/images/featured-image.jpg 2x"
+        data-sizes="auto"
+        alt="/%E5%8D%87%E7%BA%A7esxi%E5%88%B0%E6%9C%80%E6%96%B0%E7%9A%84u3%E7%89%88%E6%9C%AC/images/featured-image.jpg"
+        title="/%E5%8D%87%E7%BA%A7esxi%E5%88%B0%E6%9C%80%E6%96%B0%E7%9A%84u3%E7%89%88%E6%9C%AC/images/featured-image.jpg" /></a>
+        </div><h1 class="single-title" itemprop="name headline">
+        <a href="/%E5%8D%87%E7%BA%A7esxi%E5%88%B0%E6%9C%80%E6%96%B0%E7%9A%84u3%E7%89%88%E6%9C%AC/">升级ESXI到最新的6.7 U3版本</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Tristan</a></span>&nbsp;<span class="post-publish">published on <time datetime="2019-10-03">2019-10-03</time></span></div><div class="content">目前使用的esxi版本是差不多一年前的版本，前段时间esxi出了6.7 Update3，关于u3版本的新特征，可以看这里，貌似CPU利用率有提升？所以打算升级下，网上搜索了下文章，很容易。现在将升级过程罗列如下：
+VMware官方文档指出，想升级到esxi 6.7 u3，目前你使用的esxi最低版本必须是6.0，低于此版本的必须先升级到6.0，然后再升级到6.7 u3。
+you can only upgrade esxi to 6.7 u3 if the esxi you&rsquo;re running is 6.0 or above. Anything older than 6.0, you&rsquo;ll need to upgrade to 6.0 first, and then do a second upgrade to 6.7 u3.
+打开https://my.vmware.com，登陆，下载最新版本的esxi。
+Before you start, take a look at esxi 6.7 update 3 new fetures. Navigate to https://my.vmware.com, log in with your account, and download the latest version of esxi.</div><div class="post-footer">
+        <a href="/%E5%8D%87%E7%BA%A7esxi%E5%88%B0%E6%9C%80%E6%96%B0%E7%9A%84u3%E7%89%88%E6%9C%AC/">Read More</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/esxi/">esxi</a>,&nbsp;<a href="/tags/homelab/">homelab</a>,&nbsp;<a href="/tags/vmware/">vmware</a>,&nbsp;<a href="/tags/%E8%BD%AF%E8%B7%AF%E7%94%B1/">软路由</a></div></div>
 </article><ul class="pagination"><li class="page-item ">
                     <span class="page-link">
                         <a href="/">1</a>
