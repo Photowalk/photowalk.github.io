@@ -1,0 +1,21 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>闪光灯 - Tag - Blog</title>
+        <link>https://sudo.by/tags/%E9%97%AA%E5%85%89%E7%81%AF/</link>
+        <description>闪光灯 - Tag - Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 12 Jun 2014 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sudo.by/tags/%E9%97%AA%E5%85%89%E7%81%AF/" rel="self" type="application/rss+xml" /><item>
+    <title>闪光灯学习</title>
+    <link>https://sudo.by/speedlig/</link>
+    <pubDate>Thu, 12 Jun 2014 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/speedlig/</guid>
+    <description><![CDATA[注：本文尚未写完暂时写完，不免会有一些逻辑性错误。会在后面不断修正。文章不限于闪光灯，还有由高速闪光同步所引出的其它一些内容，比如变形问题，录像时所产生的的其余问题等。
+1. 闪光灯记录 快门速度和光圈大小影响环境光(ambient light)亮度，而影响被拍摄主题的亮度的只有光圈值；因为闪光灯闪光时间（Flash duration）很短暂，如果快门速度慢了，会增加环境光的进光量，不会增加闪光灯的进光总量，所以被摄物体亮度不变，而当光圈变大时，会增加闪光灯的进光总量，被摄物体也会变亮，相应的环境亮度也会提高，所以为了维持环境光不变的情况下，需要增加快门速度（增加快门速度不会改变被摄物体亮度）。
+被摄物亮度不变，增加环境光亮度：降低快门速度 被摄物亮度不变，降低环境光亮度：提高快门速度 环境光亮度不变，增加被摄物亮度：增大光圈，同时提高相应档次的快门速度 环境光亮度不变，降低被摄物亮度：缩小光圈，同时降低相应档次的快门速度 2. 调整被摄物亮度的几种方法 手动直接调节闪光灯的功率 调节相机光圈 调整闪光灯和物体的距离（球的表面积计算公式: 球的表面积=4πr^2）。 3. ISO 增大ISO，可以在降低闪光灯功率的情况下得到相同的亮度，从而可以延长电池使用时间。
+4. TTL = Through The Lens 5. 高速闪光和后帘同步无法同时使用。 6. 光线影响 光线不好的环境下，相机快门速度即使很慢，当环境光对被摄物体不产生影响时，你实际的快门速度是闪光灯的flash duration。可以参看视频。当环境光影响最后成像效果时，可以根据拍摄要求缩小光圈或者降低ISO值，然后试拍一张，如果拍的是全黑的，说明环境光已经不影响成像了，这时的快门速度就是闪光灯的闪光速度了，视频说明。
+7. 每档光圈值 F1， F1.4， F2， F2.8， F4， F5.6， F8， F11， F16， F22， F32， F44， F64
+8. Flash duration 佳能580EX的flash duration（网上找的非官方有争议的t.5数据）：
+1/1 power = 1/1000 second 1/2 power = 1/2000 second 1/4 power = 1/4000 second 1/8 power = 1/9000 second 1/16 power = 1/15000 second 1/32 power = 1/21000 second 1/64 power = 1/30000 second 1/128 power = 1/35000 second 9.]]></description>
+</item>
+</channel>
+</rss>

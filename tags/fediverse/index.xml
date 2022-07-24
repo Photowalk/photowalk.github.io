@@ -1,0 +1,15 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>fediverse - Tag - Blog</title>
+        <link>https://sudo.by/tags/fediverse/</link>
+        <description>fediverse - Tag - Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 24 May 2022 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sudo.by/tags/fediverse/" rel="self" type="application/rss+xml" /><item>
+    <title>Setting up your own Matrix Synapse  service on VPS</title>
+    <link>https://sudo.by/setting-up-your-own-matrix-synapse-service-on-vps/</link>
+    <pubDate>Tue, 24 May 2022 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/setting-up-your-own-matrix-synapse-service-on-vps/</guid>
+    <description><![CDATA[For the past one month, I&rsquo;ve been digging around the internet about the decentralized fediverse community. Platforms like Mastodon, Matrix Synapse, Pixelfed etc are the open-source implementations of twitter, IMs like telegram Signal and instagram, and more importantly these platforms are all decentralized, which means your posts/pics/blog/account belongs to yourself, and won&rsquo;t be deleted by those BIG companies for no reason, especially those stupid companies in China like weibo, bilibili, douyin etc.]]></description>
+</item>
+</channel>
+</rss>

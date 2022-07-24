@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>降低CPU使用率 让Plex客户端解码 - Blog</title><meta name="Description" content="Hugo theme - LoveIt"><meta property="og:title" content="降低CPU使用率 让Plex客户端解码" />
+<meta property="og:description" content="1. 硬件介绍 Plex给人的印象是需要服务器端转码，这给很多人造成了错误的印象，前几天入手了终身Plex Pass，随即折腾起来，发现Plex完全可以像Kodi一样使用客户端解码，降低服务器端的CPU占用率，加上Plex本身漂亮的UI界面和强大的数据刮削能力，Plex在Emby(收费), Jellyfin(全免费), 和Kodi(全免费，太丑，弃)的竞争中，完全不落下风。
+我的硬件：一台小的Home Box，配置是i3-7100u(Intel Kaby Lake), 8G内存。一台家用NAS，QNAP NAS 453B mini一台，10G内存, 处理器是J3455(Intel Apollo Lake), 8G内存。
+处理器是i3-7100的Home Box安装了Esxi，上面安装了Openwrt和Ubuntu server（ubuntu里又装了Plex服务器端）以及其它系统。也就是所说的软路由中安装Plex服务器。
+Ubuntu server和QNAP上都安装了Plex server，这里使用Ubuntu中的Plex server来测试，NAS仅仅作为一个存储设备。
+i3-7100U的核显是HD 620, 而QNAP NAS的处理器是J3455，核显是HD 500。两款核显均支持4K分辨率下H.264的转码transcoding（包括解码decoding和编码encoding），而对于, H.265(HEVC)编码，只有HD620的也就是7100u支持转码，J3455仅仅支持解码（支持播放）。具体核显的性能区别可以看这里以及这里。所以不论是自己组件NAS还是购买现成的NAS，CPU是非常关键的，CPU越新，核显越新，才能更大幅度的降低CPU的使用率。
+2.开始 2.1 软路由Ubuntu系统挂载NAS硬盘 首先在Ubuntu中挂载NAS中共享的电影文件夹：
+1 2 3 4 5 apt install nfs-common #安装nfs showmount -e 192.168.1.99 #看下nas哪些目录是共享可挂载的。 mkdir /mnt/qnap #在ubuntu中创建文件夹qnap，用来挂在qnap的共享文件夹 mount 192.168.1.99:/电影共享 /mnt/qnap #将nas共享的电影共享目录挂在到linux的qnap目录上。 apt install ffmpeg intel-gpu-tools #安装解码器和查看intel显卡占用率程序 2.2 显卡直通设置 ESXI中先允许核显直通修改Ubuntu server的显卡信息，将默认的修改为FALSE修改Ubuntu配置，添加PCI设备，然后选择刚才直通的显卡即可进入Ubuntu后，运行lspci | grep -i vga，发现核显直通成功随后安装Plex的Ubuntu服务器端和手机或者PC的客户端，此处略过&hellip;，需要注意的是，媒体文件夹选择刚才挂载的NAS文件夹即可。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sudo.by/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/" /><meta property="og:image" content="https://sudo.by/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/featured-image.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-04-09T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-04-09T00:00:00+00:00" /><meta property="og:site_name" content="Blog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://sudo.by/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/featured-image.png"/>
+<meta name="twitter:title" content="降低CPU使用率 让Plex客户端解码"/>
+<meta name="twitter:description" content="1. 硬件介绍 Plex给人的印象是需要服务器端转码，这给很多人造成了错误的印象，前几天入手了终身Plex Pass，随即折腾起来，发现Plex完全可以像Kodi一样使用客户端解码，降低服务器端的CPU占用率，加上Plex本身漂亮的UI界面和强大的数据刮削能力，Plex在Emby(收费), Jellyfin(全免费), 和Kodi(全免费，太丑，弃)的竞争中，完全不落下风。
+我的硬件：一台小的Home Box，配置是i3-7100u(Intel Kaby Lake), 8G内存。一台家用NAS，QNAP NAS 453B mini一台，10G内存, 处理器是J3455(Intel Apollo Lake), 8G内存。
+处理器是i3-7100的Home Box安装了Esxi，上面安装了Openwrt和Ubuntu server（ubuntu里又装了Plex服务器端）以及其它系统。也就是所说的软路由中安装Plex服务器。
+Ubuntu server和QNAP上都安装了Plex server，这里使用Ubuntu中的Plex server来测试，NAS仅仅作为一个存储设备。
+i3-7100U的核显是HD 620, 而QNAP NAS的处理器是J3455，核显是HD 500。两款核显均支持4K分辨率下H.264的转码transcoding（包括解码decoding和编码encoding），而对于, H.265(HEVC)编码，只有HD620的也就是7100u支持转码，J3455仅仅支持解码（支持播放）。具体核显的性能区别可以看这里以及这里。所以不论是自己组件NAS还是购买现成的NAS，CPU是非常关键的，CPU越新，核显越新，才能更大幅度的降低CPU的使用率。
+2.开始 2.1 软路由Ubuntu系统挂载NAS硬盘 首先在Ubuntu中挂载NAS中共享的电影文件夹：
+1 2 3 4 5 apt install nfs-common #安装nfs showmount -e 192.168.1.99 #看下nas哪些目录是共享可挂载的。 mkdir /mnt/qnap #在ubuntu中创建文件夹qnap，用来挂在qnap的共享文件夹 mount 192.168.1.99:/电影共享 /mnt/qnap #将nas共享的电影共享目录挂在到linux的qnap目录上。 apt install ffmpeg intel-gpu-tools #安装解码器和查看intel显卡占用率程序 2.2 显卡直通设置 ESXI中先允许核显直通修改Ubuntu server的显卡信息，将默认的修改为FALSE修改Ubuntu配置，添加PCI设备，然后选择刚才直通的显卡即可进入Ubuntu后，运行lspci | grep -i vga，发现核显直通成功随后安装Plex的Ubuntu服务器端和手机或者PC的客户端，此处略过&hellip;，需要注意的是，媒体文件夹选择刚才挂载的NAS文件夹即可。"/>
+<meta name="application-name" content="LoveIt">
+<meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://sudo.by/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/" /><link rel="prev" href="https://sudo.by/%E4%BD%BF%E7%94%A8qnap-nas%E7%9A%84hbs-3%E5%90%8C%E6%AD%A5onedrive-googledrive%E7%AD%89%E7%BD%91%E7%9B%98%E5%86%85%E5%AE%B9/" /><link rel="next" href="https://sudo.by/setup-mail-server-on-vps/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "降低CPU使用率 让Plex客户端解码",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/sudo.by\/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "https:\/\/sudo.by\/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81\/images\/featured-image.png",
+                            "width":  830 ,
+                            "height":  350 
+                        }],"genre": "posts","keywords": "emby, esxi, homelab, htpc, jellyfin, kodi, nas, plex, qnap, ubuntu, 软路由","wordcount":  93 ,
+        "url": "https:\/\/sudo.by\/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81\/","datePublished": "2020-04-09T00:00:00+00:00","dateModified": "2020-04-09T00:00:00+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/sudo.by\/images\/avatar.png",
+                    "width":  647 ,
+                    "height":  610 
+                }},"author": {
+                "@type": "Person",
+                "name": "Tristan"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="https://hugoloveit.com/zh-cn/categories/documentation/" rel="noopener noreffer" target="_blank"> Docs </a><a class="menu-item" href="/about/"> About </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw" aria-hidden="true"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/" selected>English</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="https://hugoloveit.com/zh-cn/categories/documentation/" title="" rel="noopener noreffer" target="_blank">Docs</a><a class="menu-item" href="/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="Select Language">English<i class="fas fa-chevron-right fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/" selected>English</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">降低CPU使用率 让Plex客户端解码</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Tristan</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2020-04-09">2020-04-09</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;93 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;One minute&nbsp;<span id="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/" class="leancloud_visitors" data-flag-title="降低CPU使用率 让Plex客户端解码">
+                        <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;views
+                    </span>&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/featured-image.png"
+        data-srcset="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/featured-image.png, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/featured-image.png 1.5x, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/featured-image.png 2x"
+        data-sizes="auto"
+        alt="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/featured-image.png"
+        title="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/featured-image.png" /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-硬件介绍">1. 硬件介绍</a></li>
+    <li><a href="#2开始">2.开始</a>
+      <ul>
+        <li><a href="#21-软路由ubuntu系统挂载nas硬盘">2.1 软路由Ubuntu系统挂载NAS硬盘</a></li>
+        <li><a href="#22-显卡直通设置">2.2 显卡直通设置</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-开始测试">3. 开始测试</a>
+      <ul>
+        <li><a href="#31-ass字幕">3.1 ass字幕</a></li>
+        <li><a href="#32-更换为srt字幕">3.2 更换为srt字幕</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-总结">4. 总结</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="1-硬件介绍">1. 硬件介绍</h2>
+<p><strong>Plex</strong>给人的印象是需要服务器端<strong>转码</strong>，这给很多人造成了错误的印象，前几天入手了终身Plex Pass，随即折腾起来，发现Plex完全可以像Kodi一样使用客户端解码，降低服务器端的<strong>CPU占用率</strong>，加上Plex本身漂亮的UI界面和强大的数据刮削能力，Plex在<strong>Emby</strong>(收费), <strong>Jellyfin</strong>(全免费), 和<strong>Kodi</strong>(全免费，太丑，弃)的竞争中，完全不落下风。</p>
+<p>我的硬件：一台小的Home Box，配置是<strong>i3-7100u(Intel Kaby Lake)</strong>, 8G内存。一台家用NAS，<strong>QNAP</strong> <strong>NAS</strong> 453B mini一台，10G内存, 处理器是<strong>J3455(Intel Apollo Lake)</strong>, 8G内存。</p>
+<p>处理器是i3-7100的Home Box安装了<strong>Esxi</strong>，上面安装了<strong>Openwrt</strong>和Ubuntu server（ubuntu里又装了Plex服务器端）以及其它系统。也就是所说的<strong>软路由</strong>中安装Plex服务器。</p>
+<p><strong>Ubuntu server</strong>和QNAP上都安装了<strong>Plex server</strong>，这里使用Ubuntu中的Plex server来测试，NAS仅仅作为一个存储设备。</p>
+<p>i3-7100U的核显是<strong>HD 620</strong>, 而QNAP NAS的处理器是J3455，<strong>核显</strong>是<strong>HD 500</strong>。两款核显均支持4K分辨率下H.264的转码<strong>transcoding</strong>（包括<strong>解码decoding</strong>和<strong>编码encoding</strong>），而对于, <strong>H.265</strong>(HEVC)编码，只有HD620的也就是7100u支持转码，J3455仅仅支持解码（支持播放）。具体<strong>核显的</strong>性能区别可以看<a href="https://bluesky-soft.com/en/dxvac/deviceInfo/decoder_intel.html" target="_blank" rel="noopener noreffer">这里</a>以及<a href="https://en.wikipedia.org/wiki/Intel_Quick_Sync_Video#Hardware_decoding_and_encoding" target="_blank" rel="noopener noreffer">这里</a>。所以不论是自己组件NAS还是购买现成的NAS，CPU是非常关键的，CPU越新，核显越新，才能更大幅度的降低CPU的使用率。</p>
+<!-- ![](images/chrome_1oeP3adGZQ.jpg) -->
+<a class="lightgallery" href="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/chrome_1oeP3adGZQ.jpg" title="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/chrome_1oeP3adGZQ.jpg" data-thumbnail="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/chrome_1oeP3adGZQ.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/chrome_1oeP3adGZQ.jpg"
+            data-srcset="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/chrome_1oeP3adGZQ.jpg, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/chrome_1oeP3adGZQ.jpg 1.5x, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/chrome_1oeP3adGZQ.jpg 2x"
+            data-sizes="auto"
+            alt="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/chrome_1oeP3adGZQ.jpg" width="1685" height="564" />
+    </a>
+<h2 id="2开始">2.开始</h2>
+<h3 id="21-软路由ubuntu系统挂载nas硬盘">2.1 软路由Ubuntu系统挂载NAS硬盘</h3>
+<p>首先在Ubuntu中挂载NAS中共享的电影文件夹：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">apt install nfs-common <span class="c1">#安装nfs</span>
+</span></span><span class="line"><span class="cl">showmount -e 192.168.1.99 <span class="c1">#看下nas哪些目录是共享可挂载的。</span>
+</span></span><span class="line"><span class="cl">mkdir /mnt/qnap <span class="c1">#在ubuntu中创建文件夹qnap，用来挂在qnap的共享文件夹</span>
+</span></span><span class="line"><span class="cl">mount 192.168.1.99:/电影共享 /mnt/qnap <span class="c1">#将nas共享的电影共享目录挂在到linux的qnap目录上。</span>
+</span></span><span class="line"><span class="cl">apt install ffmpeg intel-gpu-tools <span class="c1">#安装解码器和查看intel显卡占用率程序</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="22-显卡直通设置">2.2 显卡直通设置</h3>
+<p><figure><a class="lightgallery" href="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A1.jpg" title="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A1.jpg" data-thumbnail="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A1.jpg" data-sub-html="<h2>ESXI中先允许核显直通</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A1.jpg"
+            data-srcset="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A1.jpg, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A1.jpg 1.5x, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A1.jpg 2x"
+            data-sizes="auto"
+            alt="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A1.jpg" width="1603" height="477" />
+    </a><figcaption class="image-caption">ESXI中先允许核显直通</figcaption>
+    </figure>
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A2.jpg"
+        data-srcset="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A2.jpg, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A2.jpg 1.5x, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A2.jpg 2x"
+        data-sizes="auto"
+        alt="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A2.jpg"
+        title="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A2.jpg" width="956" height="704" /></p>
+<figure><a class="lightgallery" href="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A3.jpg" title="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A3.jpg" data-thumbnail="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A3.jpg" data-sub-html="<h2>修改Ubuntu server的显卡信息，将默认的修改为FALSE</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A3.jpg"
+            data-srcset="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A3.jpg, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A3.jpg 1.5x, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A3.jpg 2x"
+            data-sizes="auto"
+            alt="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A3.jpg" width="674" height="384" />
+    </a><figcaption class="image-caption">修改Ubuntu server的显卡信息，将默认的修改为FALSE</figcaption>
+    </figure>
+<figure><a class="lightgallery" href="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A5.jpg" title="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A5.jpg" data-thumbnail="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A5.jpg" data-sub-html="<h2>修改Ubuntu配置，添加PCI设备，然后选择刚才直通的显卡即可</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A5.jpg"
+            data-srcset="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A5.jpg, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A5.jpg 1.5x, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A5.jpg 2x"
+            data-sizes="auto"
+            alt="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A5.jpg" width="661" height="748" />
+    </a><figcaption class="image-caption">修改Ubuntu配置，添加PCI设备，然后选择刚才直通的显卡即可</figcaption>
+    </figure>
+<figure><a class="lightgallery" href="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A4.jpg" title="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A4.jpg" data-thumbnail="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A4.jpg" data-sub-html="<h2>进入Ubuntu后，运行lspci | grep -i vga，发现核显直通成功</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A4.jpg"
+            data-srcset="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A4.jpg, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A4.jpg 1.5x, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A4.jpg 2x"
+            data-sizes="auto"
+            alt="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/esxi%E6%98%BE%E5%8D%A1%E7%9B%B4%E9%80%9A4.jpg" width="543" height="34" />
+    </a><figcaption class="image-caption">进入Ubuntu后，运行lspci | grep -i vga，发现核显直通成功</figcaption>
+    </figure>
+<p>随后安装Plex的Ubuntu服务器端和手机或者PC的客户端，此处略过&hellip;，需要注意的是，媒体文件夹选择刚才挂载的NAS文件夹即可。</p>
+<h2 id="3-开始测试">3. 开始测试</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/t.jpg"
+        data-srcset="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/t.jpg, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/t.jpg 1.5x, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/t.jpg 2x"
+        data-sizes="auto"
+        alt="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/t.jpg"
+        title="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/t.jpg" width="1000" height="166" /></p>
+<p>首先进入Plex服务器后台(我这里的地址http://192.168.1.237:32400/)，点击transcoder，确保下面两个选择框都勾选</p>
+<h3 id="31-ass字幕">3.1 ass字幕</h3>
+<p>播放H.265的影片，默认使用ass字幕，服务器端资源占用率如下：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/ass%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8ECPU%E5%8D%A0%E7%94%A8%E7%8E%87.jpg"
+        data-srcset="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/ass%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8ECPU%E5%8D%A0%E7%94%A8%E7%8E%87.jpg, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/ass%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8ECPU%E5%8D%A0%E7%94%A8%E7%8E%87.jpg 1.5x, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/ass%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8ECPU%E5%8D%A0%E7%94%A8%E7%8E%87.jpg 2x"
+        data-sizes="auto"
+        alt="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/ass%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8ECPU%E5%8D%A0%E7%94%A8%E7%8E%87.jpg"
+        title="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/ass%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8ECPU%E5%8D%A0%E7%94%A8%E7%8E%87.jpg" width="784" height="401" /></p>
+<p>运行htop，cpu占用率情况，可以看到plex的transcoder在工作</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/ass%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EGPU%E5%8D%A0%E7%94%A8%E7%8E%87.jpg"
+        data-srcset="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/ass%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EGPU%E5%8D%A0%E7%94%A8%E7%8E%87.jpg, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/ass%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EGPU%E5%8D%A0%E7%94%A8%E7%8E%87.jpg 1.5x, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/ass%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EGPU%E5%8D%A0%E7%94%A8%E7%8E%87.jpg 2x"
+        data-sizes="auto"
+        alt="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/ass%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EGPU%E5%8D%A0%E7%94%A8%E7%8E%87.jpg"
+        title="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/ass%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EGPU%E5%8D%A0%E7%94%A8%E7%8E%87.jpg" width="623" height="209" /></p>
+<p>运行intel_gpu_top，可以看到核显也在工作</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/ass%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EPlex%E5%90%8E%E5%8F%B0%E6%98%BE%E7%A4%BA%E5%9C%A8%E8%BD%AC%E7%A0%81.jpg"
+        data-srcset="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/ass%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EPlex%E5%90%8E%E5%8F%B0%E6%98%BE%E7%A4%BA%E5%9C%A8%E8%BD%AC%E7%A0%81.jpg, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/ass%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EPlex%E5%90%8E%E5%8F%B0%E6%98%BE%E7%A4%BA%E5%9C%A8%E8%BD%AC%E7%A0%81.jpg 1.5x, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/ass%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EPlex%E5%90%8E%E5%8F%B0%E6%98%BE%E7%A4%BA%E5%9C%A8%E8%BD%AC%E7%A0%81.jpg 2x"
+        data-sizes="auto"
+        alt="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/ass%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EPlex%E5%90%8E%E5%8F%B0%E6%98%BE%E7%A4%BA%E5%9C%A8%E8%BD%AC%E7%A0%81.jpg"
+        title="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/ass%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EPlex%E5%90%8E%E5%8F%B0%E6%98%BE%E7%A4%BA%E5%9C%A8%E8%BD%AC%E7%A0%81.jpg" width="292" height="378" /></p>
+<p>Plex后台也可以看到Plex在硬件转码(HW)，字幕显示ASS格式</p>
+<h3 id="32-更换为srt字幕">3.2 更换为srt字幕</h3>
+<p>我下载的影片内嵌了srt的字幕，在播放终端手动将字幕设为srt字幕后的情况：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/srt%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8Eplex%E8%BF%9B%E7%A8%8B%E6%B6%88%E8%80%97%E8%B5%84%E6%BA%90.jpg"
+        data-srcset="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/srt%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8Eplex%E8%BF%9B%E7%A8%8B%E6%B6%88%E8%80%97%E8%B5%84%E6%BA%90.jpg, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/srt%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8Eplex%E8%BF%9B%E7%A8%8B%E6%B6%88%E8%80%97%E8%B5%84%E6%BA%90.jpg 1.5x, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/srt%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8Eplex%E8%BF%9B%E7%A8%8B%E6%B6%88%E8%80%97%E8%B5%84%E6%BA%90.jpg 2x"
+        data-sizes="auto"
+        alt="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/srt%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8Eplex%E8%BF%9B%E7%A8%8B%E6%B6%88%E8%80%97%E8%B5%84%E6%BA%90.jpg"
+        title="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/srt%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8Eplex%E8%BF%9B%E7%A8%8B%E6%B6%88%E8%80%97%E8%B5%84%E6%BA%90.jpg" width="768" height="319" /></p>
+<p>CPU占用率明显下降，并且plex的transcoder没有工作</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/srt%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EGPU%E5%8D%A0%E7%94%A8%E7%8E%87.jpg"
+        data-srcset="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/srt%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EGPU%E5%8D%A0%E7%94%A8%E7%8E%87.jpg, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/srt%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EGPU%E5%8D%A0%E7%94%A8%E7%8E%87.jpg 1.5x, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/srt%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EGPU%E5%8D%A0%E7%94%A8%E7%8E%87.jpg 2x"
+        data-sizes="auto"
+        alt="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/srt%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EGPU%E5%8D%A0%E7%94%A8%E7%8E%87.jpg"
+        title="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/srt%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EGPU%E5%8D%A0%E7%94%A8%E7%8E%87.jpg" width="569" height="203" /></p>
+<p>核显没有任何负载</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/srt%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EPlex%E5%90%8E%E5%8F%B0%E6%98%BE%E7%A4%BA%E6%B2%A1%E6%9C%89%E8%BD%AC%E7%A0%81.jpg"
+        data-srcset="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/srt%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EPlex%E5%90%8E%E5%8F%B0%E6%98%BE%E7%A4%BA%E6%B2%A1%E6%9C%89%E8%BD%AC%E7%A0%81.jpg, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/srt%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EPlex%E5%90%8E%E5%8F%B0%E6%98%BE%E7%A4%BA%E6%B2%A1%E6%9C%89%E8%BD%AC%E7%A0%81.jpg 1.5x, /%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/srt%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EPlex%E5%90%8E%E5%8F%B0%E6%98%BE%E7%A4%BA%E6%B2%A1%E6%9C%89%E8%BD%AC%E7%A0%81.jpg 2x"
+        data-sizes="auto"
+        alt="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/srt%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EPlex%E5%90%8E%E5%8F%B0%E6%98%BE%E7%A4%BA%E6%B2%A1%E6%9C%89%E8%BD%AC%E7%A0%81.jpg"
+        title="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/images/srt%E5%AD%97%E5%B9%95%E5%BC%80%E5%90%AF%E5%90%8EPlex%E5%90%8E%E5%8F%B0%E6%98%BE%E7%A4%BA%E6%B2%A1%E6%9C%89%E8%BD%AC%E7%A0%81.jpg" width="286" height="330" /></p>
+<p>Plex后台显示Direct Play，意思就是后台没有进行任何的转码，字幕是SRT</p>
+<h2 id="4-总结">4. 总结</h2>
+<p>所以以我目前的播放终端来看，能更进一步降低CPU占用率的很简单的办法就是更换字幕格式，实际测试发现SRT和**PGS（pgs字幕还带有各种特效和字体，居然不转码？！很奇怪）**以及SSA格式的字幕均不会转码，很不起眼的原因。如果必须服务器端解码的时候，这就考验服务器端CPU的核显了，牙膏厂的7系列及以后的cpu的核显(620及以后的可以)可以承担很多工作，这样CPU使用率会低很多。</p>
+<p>音频有时候也会转码，但是cpu的使用率却非常低，所以不考虑了。</p>
+<p>下一步研究下免费的Jellyfin，毕竟是免费的，并且是从收费的Emby脱离出来的。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2020-04-09</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://sudo.by/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/" data-title="降低CPU使用率 让Plex客户端解码" data-via="xxxx" data-hashtags="emby,esxi,homelab,htpc,jellyfin,kodi,nas,plex,qnap,ubuntu,软路由"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://sudo.by/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/" data-hashtag="emby"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://sudo.by/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/" data-title="降低CPU使用率 让Plex客户端解码"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://sudo.by/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/" data-title="降低CPU使用率 让Plex客户端解码"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://sudo.by/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/" data-title="降低CPU使用率 让Plex客户端解码"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/emby/">emby</a>,&nbsp;<a href="/tags/esxi/">esxi</a>,&nbsp;<a href="/tags/homelab/">homelab</a>,&nbsp;<a href="/tags/htpc/">htpc</a>,&nbsp;<a href="/tags/jellyfin/">jellyfin</a>,&nbsp;<a href="/tags/kodi/">kodi</a>,&nbsp;<a href="/tags/nas/">nas</a>,&nbsp;<a href="/tags/plex/">plex</a>,&nbsp;<a href="/tags/qnap/">qnap</a>,&nbsp;<a href="/tags/ubuntu/">ubuntu</a>,&nbsp;<a href="/tags/%E8%BD%AF%E8%B7%AF%E7%94%B1/">软路由</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/%E4%BD%BF%E7%94%A8qnap-nas%E7%9A%84hbs-3%E5%90%8C%E6%AD%A5onedrive-googledrive%E7%AD%89%E7%BD%91%E7%9B%98%E5%86%85%E5%AE%B9/" class="prev" rel="prev" title="使用qnap nas的hbs 3同步onedrive googledrive等网盘内容"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>使用qnap nas的hbs 3同步onedrive googledrive等网盘内容</a>
+            <a href="/setup-mail-server-on-vps/" class="next" rel="next" title="使用Maddy搭建自己的邮箱服务">使用Maddy搭建自己的邮箱服务<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.101.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2004 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Tristan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{"valine":{"appId":"gXWOeYv428Pc5bCzud5roEX3-MdYXbMMI","appKey":"uVbVKxBPBfh2Qr39kYidupjD","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"en","pageSize":10,"placeholder":"Your comment ...","recordIP":true,"serverURLs":"https://leancloud.hugoloveit.com","visitor":true}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.en","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

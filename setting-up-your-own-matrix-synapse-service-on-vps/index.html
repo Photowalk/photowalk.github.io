@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Setting up your own Matrix Synapse  service on VPS - Blog</title><meta name="Description" content="Hugo theme - LoveIt"><meta property="og:title" content="Setting up your own Matrix Synapse  service on VPS" />
+<meta property="og:description" content="For the past one month, I&rsquo;ve been digging around the internet about the decentralized fediverse community. Platforms like Mastodon, Matrix Synapse, Pixelfed etc are the open-source implementations of twitter, IMs like telegram Signal and instagram, and more importantly these platforms are all decentralized, which means your posts/pics/blog/account belongs to yourself, and won&rsquo;t be deleted by those BIG companies for no reason, especially those stupid companies in China like weibo, bilibili, douyin etc." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sudo.by/setting-up-your-own-matrix-synapse-service-on-vps/" /><meta property="og:image" content="https://sudo.by/setting-up-your-own-matrix-synapse-service-on-vps/images/featured-image.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-05-24T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-05-24T00:00:00+00:00" /><meta property="og:site_name" content="Blog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://sudo.by/setting-up-your-own-matrix-synapse-service-on-vps/images/featured-image.png"/>
+<meta name="twitter:title" content="Setting up your own Matrix Synapse  service on VPS"/>
+<meta name="twitter:description" content="For the past one month, I&rsquo;ve been digging around the internet about the decentralized fediverse community. Platforms like Mastodon, Matrix Synapse, Pixelfed etc are the open-source implementations of twitter, IMs like telegram Signal and instagram, and more importantly these platforms are all decentralized, which means your posts/pics/blog/account belongs to yourself, and won&rsquo;t be deleted by those BIG companies for no reason, especially those stupid companies in China like weibo, bilibili, douyin etc."/>
+<meta name="application-name" content="LoveIt">
+<meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://sudo.by/setting-up-your-own-matrix-synapse-service-on-vps/" /><link rel="prev" href="https://sudo.by/setup-mail-server-on-vps/" /><link rel="next" href="https://sudo.by/moving-to-hugo/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Setting up your own Matrix Synapse  service on VPS",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/sudo.by\/setting-up-your-own-matrix-synapse-service-on-vps\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "https:\/\/sudo.by\/setting-up-your-own-matrix-synapse-service-on-vps\/images\/featured-image.png",
+                            "width":  800 ,
+                            "height":  400 
+                        }],"genre": "posts","keywords": "fediverse, matrix, synapse, ubuntu, vps","wordcount":  1359 ,
+        "url": "https:\/\/sudo.by\/setting-up-your-own-matrix-synapse-service-on-vps\/","datePublished": "2022-05-24T00:00:00+00:00","dateModified": "2022-05-24T00:00:00+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/sudo.by\/images\/avatar.png",
+                    "width":  647 ,
+                    "height":  610 
+                }},"author": {
+                "@type": "Person",
+                "name": "Tristan"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="https://hugoloveit.com/zh-cn/categories/documentation/" rel="noopener noreffer" target="_blank"> Docs </a><a class="menu-item" href="/about/"> About </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw" aria-hidden="true"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/setting-up-your-own-matrix-synapse-service-on-vps/" selected>English</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="https://hugoloveit.com/zh-cn/categories/documentation/" title="" rel="noopener noreffer" target="_blank">Docs</a><a class="menu-item" href="/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="Select Language">English<i class="fas fa-chevron-right fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/setting-up-your-own-matrix-synapse-service-on-vps/" selected>English</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Setting up your own Matrix Synapse  service on VPS</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Tristan</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-05-24">2022-05-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1359 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;7 minutes&nbsp;<span id="/setting-up-your-own-matrix-synapse-service-on-vps/" class="leancloud_visitors" data-flag-title="Setting up your own Matrix Synapse  service on VPS">
+                        <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;views
+                    </span>&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/setting-up-your-own-matrix-synapse-service-on-vps/images/featured-image.png"
+        data-srcset="/setting-up-your-own-matrix-synapse-service-on-vps/images/featured-image.png, /setting-up-your-own-matrix-synapse-service-on-vps/images/featured-image.png 1.5x, /setting-up-your-own-matrix-synapse-service-on-vps/images/featured-image.png 2x"
+        data-sizes="auto"
+        alt="/setting-up-your-own-matrix-synapse-service-on-vps/images/featured-image.png"
+        title="/setting-up-your-own-matrix-synapse-service-on-vps/images/featured-image.png" /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-install-matrix-synapse-package">1. Install matrix synapse package</a>
+      <ul>
+        <li><a href="#11-installation">1.1 Installation</a></li>
+        <li><a href="#12-change-the-configurations">1.2 Change the configurations:</a></li>
+        <li><a href="#13-install-nginx-and-certbot">1.3 Install Nginx and certbot</a></li>
+        <li><a href="#14-create-nginx-config-files">1.4 Create Nginx config files</a>
+          <ul>
+            <li><a href="#141-base-domain-config-file">1.4.1 Base domain config file</a></li>
+            <li><a href="#142-subdomain-config-file">1.4.2 Subdomain config file</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#2-setting-up-postgres">2. Setting up Postgres</a></li>
+    <li><a href="#3-create-the-admin-account">3. Create the admin account</a></li>
+    <li><a href="#4-upgrade">4. Upgrade</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><meting-js server="netease" type="song" id="2103765" theme="#448aff"></meting-js>
+<p>For the past one month, I&rsquo;ve been digging around the internet about the <strong>decentralized fediverse</strong> community.  Platforms like <strong>Mastodon</strong>, <a href="https://github.com/matrix-org/synapse" target="_blank" rel="noopener noreffer"><strong>Matrix Synapse</strong></a>, <strong>Pixelfed</strong> etc are the open-source implementations of twitter, IMs like telegram Signal and instagram, and more importantly these platforms are all decentralized, which means your posts/pics/blog/account belongs to yourself, and won&rsquo;t be deleted by those BIG companies for no reason, especially those stupid companies in China like weibo, bilibili, douyin etc. Ad-free, no user privacy tracking/leaking are also advantages of the fediverse platforms.</p>
+<p>Up to now, I&rsquo;ve tried my hand on Soapbox FE, Matrix Synapse and got them successfully running on my VPS. This post mainly focuses on the installation of Matrix Synapse which was written in Python. There is a Go version of Matrix - <strong><a href="https://github.com/matrix-org/dendrite" target="_blank" rel="noopener noreffer">Dendrite</a></strong>. It&rsquo;s more efficient and maybe the VPS hardware requirements aren&rsquo;t that high. But it&rsquo;s still in the beta version, not recommended for the  production environment.</p>
+<p>Minimal VPS Specs: 1-core vCPU, 1G of RAM, here is the utilization of Synapse running on my VPS(just 1 user), 2G RAM is recommended for users less than 20. The OS is Ubuntu 20.04.</p>
+<p>I&rsquo;ve made a test video call between my 2 phones, the CPU ( Intel(R) Xeon(R) CPU E5-2690 v4 @ 2.60GHz ) usage is around 25%, so a 2-core CPU is recommended.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/setting-up-your-own-matrix-synapse-service-on-vps/images/utilization-of-Synapse.jpg"
+        data-srcset="/setting-up-your-own-matrix-synapse-service-on-vps/images/utilization-of-Synapse.jpg, /setting-up-your-own-matrix-synapse-service-on-vps/images/utilization-of-Synapse.jpg 1.5x, /setting-up-your-own-matrix-synapse-service-on-vps/images/utilization-of-Synapse.jpg 2x"
+        data-sizes="auto"
+        alt="/setting-up-your-own-matrix-synapse-service-on-vps/images/utilization-of-Synapse.jpg"
+        title="/setting-up-your-own-matrix-synapse-service-on-vps/images/utilization-of-Synapse.jpg" width="930" height="72" /></p>
+<p>I want to use the base domain as part of the user name, like @user:domain.org, instead of @user:matrix.domain.org which is the actual server address. In this case, you can host other websites with the base domain example.org.</p>
+<p>Let&rsquo;s get rolling!</p>
+<h2 id="1-install-matrix-synapse-package">1. Install matrix synapse package</h2>
+<h3 id="11-installation">1.1 Installation</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo apt update 
+</span></span><span class="line"><span class="cl">sudo apt upgrade -y
+</span></span><span class="line"><span class="cl">sudo apt install lsb-release wget apt-transport-https -y
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sudo wget -qO /usr/share/keyrings/matrix-org-archive-keyring.gpg https://packages.matrix.org/debian/matrix-org-archive-keyring.gpg 
+</span></span><span class="line"><span class="cl">sudo <span class="nb">echo</span> <span class="s2">&#34;deb [signed-by=/usr/share/keyrings/matrix-org-archive-keyring.gpg] https://packages.matrix.org/debian/ </span><span class="k">$(</span>lsb_release -cs<span class="k">)</span><span class="s2"> main&#34;</span> <span class="p">|</span> sudo tee /etc/apt/sources.list.d/matrix-org.list
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sudo apt update 
+</span></span><span class="line"><span class="cl">sudo apt upgrade 
+</span></span><span class="line"><span class="cl">sudo apt install matrix-synapse-py3
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>One window will pop up, <strong>enter the base domain name example.org, NOT matrix.example.org</strong>, it&rsquo;s very important. Hit <code>OK</code> and then <code>NO</code>.
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-synapse-server-name.jpg"
+        data-srcset="/setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-synapse-server-name.jpg, /setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-synapse-server-name.jpg 1.5x, /setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-synapse-server-name.jpg 2x"
+        data-sizes="auto"
+        alt="/setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-synapse-server-name.jpg"
+        title="/setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-synapse-server-name.jpg" width="1024" height="212" /></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo systemctl <span class="nb">enable</span> matrix-synapse 
+</span></span><span class="line"><span class="cl">sudo systemctl start matrix-synapse 
+</span></span><span class="line"><span class="cl">sudo systemctl status matrix-synapse
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-synapse-status.jpg"
+        data-srcset="/setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-synapse-status.jpg, /setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-synapse-status.jpg 1.5x, /setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-synapse-status.jpg 2x"
+        data-sizes="auto"
+        alt="/setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-synapse-status.jpg"
+        title="/setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-synapse-status.jpg" width="951" height="306" /></p>
+<p>Go through the log file if synapse is not running:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo tail -f /var/log/matrix-synapse/homeserver.log
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Make sure again by typing:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo netstat -lnpt <span class="p">|</span> grep :8008
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/setting-up-your-own-matrix-synapse-service-on-vps/images/port8008.jpg"
+        data-srcset="/setting-up-your-own-matrix-synapse-service-on-vps/images/port8008.jpg, /setting-up-your-own-matrix-synapse-service-on-vps/images/port8008.jpg 1.5x, /setting-up-your-own-matrix-synapse-service-on-vps/images/port8008.jpg 2x"
+        data-sizes="auto"
+        alt="/setting-up-your-own-matrix-synapse-service-on-vps/images/port8008.jpg"
+        title="/setting-up-your-own-matrix-synapse-service-on-vps/images/port8008.jpg" width="648" height="48" /></p>
+<h3 id="12-change-the-configurations">1.2 Change the configurations:</h3>
+<p>Generate the Matrix Synapse registration secret:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">cat /dev/urandom <span class="p">|</span> tr -dc <span class="s1">&#39;a-zA-Z0-9&#39;</span> <span class="p">|</span> fold -w <span class="m">32</span> <span class="p">|</span> head -n <span class="m">1</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/setting-up-your-own-matrix-synapse-service-on-vps/images/random-string.jpg"
+        data-srcset="/setting-up-your-own-matrix-synapse-service-on-vps/images/random-string.jpg, /setting-up-your-own-matrix-synapse-service-on-vps/images/random-string.jpg 1.5x, /setting-up-your-own-matrix-synapse-service-on-vps/images/random-string.jpg 2x"
+        data-sizes="auto"
+        alt="/setting-up-your-own-matrix-synapse-service-on-vps/images/random-string.jpg"
+        title="/setting-up-your-own-matrix-synapse-service-on-vps/images/random-string.jpg" width="535" height="48" /></p>
+<p>Edit the synapse config file:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo nano /etc/matrix-synapse/homeserver.yaml
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Press Ctrl+w to find <code>registration_shared_secret:</code> uncomment it and change the value with the generated random string.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/setting-up-your-own-matrix-synapse-service-on-vps/images/change-registration_shared_secret-value.jpg"
+        data-srcset="/setting-up-your-own-matrix-synapse-service-on-vps/images/change-registration_shared_secret-value.jpg, /setting-up-your-own-matrix-synapse-service-on-vps/images/change-registration_shared_secret-value.jpg 1.5x, /setting-up-your-own-matrix-synapse-service-on-vps/images/change-registration_shared_secret-value.jpg 2x"
+        data-sizes="auto"
+        alt="/setting-up-your-own-matrix-synapse-service-on-vps/images/change-registration_shared_secret-value.jpg"
+        title="/setting-up-your-own-matrix-synapse-service-on-vps/images/change-registration_shared_secret-value.jpg" width="538" height="69" /></p>
+<p>Find the following lines and change the value correspondingly:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="cl"><span class="na">enable_registration: false</span>
+</span></span><span class="line"><span class="cl"><span class="na">allow_public_rooms_without_auth: false</span>
+</span></span><span class="line"><span class="cl"><span class="na">allow_public_rooms_over_federation: false</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Press Ctrl+o to save the file and Ctrl+x to exit. Then restart the synapse service:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo systemctl restart matrix-synapse
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Again, if anything goes wrong, check out the log file.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo tail -f /var/log/matrix-synapse/homeserver.log
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="13-install-nginx-and-certbot">1.3 Install Nginx and certbot</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">apt install nginx certbot python3-certbot-nginx -y
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Generate the SSL certificates:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo systemctl stop nginx
+</span></span><span class="line"><span class="cl">sudo certbot certonly -d example.org -d matrix.example.org
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="14-create-nginx-config-files">1.4 Create Nginx config files</h3>
+<h4 id="141-base-domain-config-file">1.4.1 Base domain config file</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">cd</span> /etc/nginx/sites-available
+</span></span><span class="line"><span class="cl">sudo nano example.org
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Change the contents to:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-nginx" data-lang="nginx"><span class="line"><span class="cl"><span class="k">server</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kn">root</span> <span class="s">/var/www/example.org</span><span class="p">;</span>  <span class="c1"># You can host another website here or do a reverse proxy.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># Add index.php to the list if you are using PHP
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kn">index</span> <span class="s">index.html</span> <span class="s">index.htm</span> <span class="s">index.nginx-debian.html</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kn">server_name</span> <span class="s">example.org</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kn">location</span> <span class="s">/</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="c1"># First attempt to serve request as file, then
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="c1"># as directory, then fall back to displaying a 404.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="kn">try_files</span> <span class="nv">$uri</span> <span class="nv">$uri/</span> <span class="p">=</span><span class="mi">404</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kn">location</span> <span class="s">/.well-known/matrix/client</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># pay attention here, help clients like element to find the actual address.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kn">return</span> <span class="mi">200</span> <span class="s">&#39;</span><span class="p">{</span><span class="kn">&#34;m.homeserver&#34;:</span> <span class="p">{</span><span class="kn">&#34;base_url&#34;:</span> <span class="s">&#34;matrix.example.org&lt;/a&gt;&#34;</span><span class="err">}}</span><span class="s">&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kn">default_type</span> <span class="s">application/json</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kn">add_header</span> <span class="s">Access-Control-Allow-Origin</span> <span class="s">*</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kn">location</span> <span class="s">/.well-known/matrix/server</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kn">return</span> <span class="mi">200</span> <span class="s">&#39;</span><span class="p">{</span><span class="kn">&#34;m.server&#34;:</span> <span class="s">&#34;matrix.example.org:443&#34;</span><span class="err">}</span><span class="s">&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kn">default_type</span> <span class="s">application/json</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kn">add_header</span> <span class="s">Access-Control-Allow-Origin</span> <span class="s">*</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kn">listen</span> <span class="s">[::]:443</span> <span class="s">ssl</span> <span class="s">ipv6only=on</span><span class="p">;</span> <span class="c1"># managed by Certbot
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kn">listen</span> <span class="mi">443</span> <span class="s">ssl</span><span class="p">;</span> <span class="c1"># managed by Certbot
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kn">ssl_certificate</span> <span class="s">/etc/letsencrypt/live/example.org/fullchain.pem</span><span class="p">;</span> <span class="c1"># managed by Certbot
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kn">ssl_certificate_key</span> <span class="s">/etc/letsencrypt/live/example.org/privkey.pem</span><span class="p">;</span> <span class="c1"># managed by Certbot
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kn">include</span> <span class="s">/etc/letsencrypt/options-ssl-nginx.conf</span><span class="p">;</span> <span class="c1"># managed by Certbot
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kn">ssl_dhparam</span> <span class="s">/etc/letsencrypt/ssl-dhparams.pem</span><span class="p">;</span> <span class="c1"># managed by Certbot
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">server</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">if</span> <span class="s">(</span><span class="nv">$host</span> <span class="p">=</span> <span class="s">example.org)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kn">return</span> <span class="mi">301</span> <span class="s">https://</span><span class="nv">$host$request_uri</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="c1"># managed by Certbot
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kn">listen</span> <span class="mi">80</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">listen</span> <span class="s">[::]:80</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">server_name</span> <span class="s">example.org</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">return</span> <span class="mi">404</span><span class="p">;</span> <span class="c1"># managed by Certbot
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span> 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="142-subdomain-config-file">1.4.2 Subdomain config file</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo nano matrix.example.org
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Change the content to:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-nginx" data-lang="nginx"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">server</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">listen</span> <span class="mi">443</span> <span class="s">ssl</span> <span class="s">http2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">listen</span> <span class="s">[::]:443</span> <span class="s">ssl</span> <span class="s">http2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># make your synapse instance federated. 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kn">listen</span> <span class="mi">8448</span> <span class="s">ssl</span> <span class="s">http2</span><span class="p">;</span>  
+</span></span><span class="line"><span class="cl">    <span class="kn">listen</span> <span class="s">[::]:8448</span> <span class="s">ssl</span> <span class="s">http2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kn">server_name</span> <span class="s">matrix.example.org</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kn">ssl_certificate</span> <span class="s">/etc/letsencrypt/live/matrix.example.org/fullchain.pem</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">ssl_certificate_key</span> <span class="s">/etc/letsencrypt/live/matrix.example.org/privkey.pem</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kn">ssl_protocols</span> <span class="s">TLSv1.2</span> <span class="s">TLSv1.3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">ssl_prefer_server_ciphers</span> <span class="no">on</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">ssl_ciphers</span> <span class="s">ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">ssl_session_timeout</span>  <span class="mi">10m</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">ssl_session_cache</span> <span class="s">shared:SSL:10m</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">ssl_session_tickets</span> <span class="no">on</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">ssl_stapling</span> <span class="no">on</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">ssl_stapling_verify</span> <span class="no">on</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kn">location</span> <span class="p">~</span> <span class="sr">^(/_matrix|/_synapse/client)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># note: do not add a path (even a single /) after the port in `proxy_pass`,
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="c1"># otherwise nginx will canonicalise the URI and cause signature verification
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="c1"># errors.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kn">proxy_pass</span> <span class="s">http://127.0.0.1:8008</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kn">proxy_set_header</span> <span class="s">X-Forwarded-For</span> <span class="nv">$remote_addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kn">proxy_set_header</span> <span class="s">X-Forwarded-Proto</span> <span class="nv">$scheme</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kn">proxy_set_header</span> <span class="s">Host</span> <span class="nv">$host</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1"># Nginx by default only allows file uploads up to 1M in size
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="c1"># Increase client_max_body_size to match max_upload_size defined in homeserver.yaml
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kn">client_max_body_size</span> <span class="s">200M</span><span class="p">;</span>  <span class="c1"># support file size up to 200MB
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># make your synapse instance federated.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kn">location</span> <span class="s">/</span> <span class="p">{</span>  
+</span></span><span class="line"><span class="cl">        <span class="kn">proxy_pass</span> <span class="s">http://localhost:8008</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kn">proxy_set_header</span> <span class="s">X-Forwarded-For</span> <span class="nv">$remote_addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>  
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">server</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">if</span> <span class="s">(</span><span class="nv">$host</span> <span class="p">=</span> <span class="s">matrix.example.org)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kn">return</span> <span class="mi">301</span> <span class="s">https://</span><span class="nv">$host$request_uri</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="c1"># managed by Certbot
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="kn">listen</span> <span class="mi">80</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">listen</span> <span class="s">[::]:80</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">server_name</span> <span class="s">matrix.example.org</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">return</span> <span class="mi">404</span><span class="p">;</span> <span class="c1"># managed by Certbot
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Link the config file to sites-enables folder and restart nginx</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ln -s /etc/nginx/sites-available/example.org /etc/nginx/sites-enabled/
+</span></span><span class="line"><span class="cl">ln -s /etc/nginx/sites-available/matrix.example.org etc/nginx/sites-enabled/
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">nginx -t
+</span></span><span class="line"><span class="cl">systemctl restart nginx
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="2-setting-up-postgres">2. Setting up Postgres</h2>
+<p>Issue the following commands:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo apt install postgresql postgresql-contrib
+</span></span><span class="line"><span class="cl">sudo -i -u postgres
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">--database user and password
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="s2">&#34;synapseuser&#34;</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="n">PASSWORD</span><span class="w"> </span><span class="s1">&#39;Password&#39;</span><span class="p">;</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">CREATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">synapse</span><span class="w"> </span><span class="k">ENCODING</span><span class="w"> </span><span class="s1">&#39;UTF8&#39;</span><span class="w"> </span><span class="n">LC_COLLATE</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="w"> </span><span class="n">LC_CTYPE</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="w"> </span><span class="k">template</span><span class="o">=</span><span class="n">template0</span><span class="w"> </span><span class="k">OWNER</span><span class="w"> </span><span class="s2">&#34;synapseuser&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">exit</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo apt install python3-psycopg2
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Edit synapse config file:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo nano /etc/matrix-synapse/homeserver.yaml
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Since I&rsquo;ll use PostgreSQL instead of sqlite3, comment out the following lines:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="cl"><span class="c1"># database:</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#  name: sqlite3</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#  args:</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    database: /path/to/homeserver.db</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Uncomment the following lines:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="cl"><span class="na">database:</span>
+</span></span><span class="line"><span class="cl">  <span class="na">name: psycopg2</span>
+</span></span><span class="line"><span class="cl">  <span class="na">txn_limit: 10000</span>
+</span></span><span class="line"><span class="cl">  <span class="na">args:</span>
+</span></span><span class="line"><span class="cl">    <span class="na">user: synapseuser  </span>
+</span></span><span class="line"><span class="cl">    <span class="na">password: password  # enter the database username &amp; password created above.</span>
+</span></span><span class="line"><span class="cl">    <span class="na">database: synapse</span>
+</span></span><span class="line"><span class="cl">    <span class="na">host: localhost</span>
+</span></span><span class="line"><span class="cl">    <span class="na">port: 5432</span>
+</span></span><span class="line"><span class="cl">    <span class="na">cp_min: 5</span>
+</span></span><span class="line"><span class="cl">    <span class="na">cp_max: 10</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Looks like this:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/setting-up-your-own-matrix-synapse-service-on-vps/images/db-config.jpg"
+        data-srcset="/setting-up-your-own-matrix-synapse-service-on-vps/images/db-config.jpg, /setting-up-your-own-matrix-synapse-service-on-vps/images/db-config.jpg 1.5x, /setting-up-your-own-matrix-synapse-service-on-vps/images/db-config.jpg 2x"
+        data-sizes="auto"
+        alt="/setting-up-your-own-matrix-synapse-service-on-vps/images/db-config.jpg"
+        title="/setting-up-your-own-matrix-synapse-service-on-vps/images/db-config.jpg" width="690" height="332" /></p>
+<p>Change public_baseurl to the real domain matrix.example.org <strong>(IMPORTANT!)</strong>:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/setting-up-your-own-matrix-synapse-service-on-vps/images/change-public_baseurl.jpg"
+        data-srcset="/setting-up-your-own-matrix-synapse-service-on-vps/images/change-public_baseurl.jpg, /setting-up-your-own-matrix-synapse-service-on-vps/images/change-public_baseurl.jpg 1.5x, /setting-up-your-own-matrix-synapse-service-on-vps/images/change-public_baseurl.jpg 2x"
+        data-sizes="auto"
+        alt="/setting-up-your-own-matrix-synapse-service-on-vps/images/change-public_baseurl.jpg"
+        title="/setting-up-your-own-matrix-synapse-service-on-vps/images/change-public_baseurl.jpg" width="587" height="228" /></p>
+<p>Find and change maximum file size to 200M</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="cl"><span class="na">max_upload_size: 200M</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Since the file size has been changed in the nginx config file of matrix.example.org, there is 1 more place need to be changed:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo nano /etc/nginx/nginx.conf
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Add the following line in http section:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="cl"><span class="na">client_max_body_size 200M;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Save &amp; exit. Restart synapse &amp; nginx:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo systemctl restart matrix-synapse
+</span></span><span class="line"><span class="cl">sudo nginx -t
+</span></span><span class="line"><span class="cl">sudo systemctl restart nginx
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Enable ports:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ufw allow OpenSSH
+</span></span><span class="line"><span class="cl">ufw allow <span class="s1">&#39;Nginx Full&#39;</span>
+</span></span><span class="line"><span class="cl">ufw allow <span class="m">8448</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Visit <a href="https://matrix.example.org:8448" target="_blank" rel="noopener noreffer">https://matrix.example.org:8448</a>, you&rsquo;ll get this page:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-welcome-page.jpg"
+        data-srcset="/setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-welcome-page.jpg, /setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-welcome-page.jpg 1.5x, /setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-welcome-page.jpg 2x"
+        data-sizes="auto"
+        alt="/setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-welcome-page.jpg"
+        title="/setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-welcome-page.jpg" width="663" height="523" /></p>
+<p>Visit <a href="https://federationtester.matrix.org/" target="_blank" rel="noopener noreffer">https://federationtester.matrix.org/</a> , enter the base domain example.org to test if everything is OK.</p>
+<h2 id="3-create-the-admin-account">3. Create the admin account</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">register_new_matrix_user -c /etc/matrix-synapse/homeserver.yaml http://localhost:8008
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Type name &amp; password, and then type yes when asked if make it admin.</p>
+<p>Visit <a href="https://app.element.io/#/login" target="_blank" rel="noopener noreffer">https://app.element.io/#/login</a> to login. Click Edit at the upper-right corner of the page, and then fill in the actual synapse address:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/setting-up-your-own-matrix-synapse-service-on-vps/images/element.jpg"
+        data-srcset="/setting-up-your-own-matrix-synapse-service-on-vps/images/element.jpg, /setting-up-your-own-matrix-synapse-service-on-vps/images/element.jpg 1.5x, /setting-up-your-own-matrix-synapse-service-on-vps/images/element.jpg 2x"
+        data-sizes="auto"
+        alt="/setting-up-your-own-matrix-synapse-service-on-vps/images/element.jpg"
+        title="/setting-up-your-own-matrix-synapse-service-on-vps/images/element.jpg" width="982" height="649" /></p>
+<p>Hit Continue and then enter the username and password you just created. You might see something like this as well🤣🤣🤣</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/setting-up-your-own-matrix-synapse-service-on-vps/images/element-misconfigured.jpg"
+        data-srcset="/setting-up-your-own-matrix-synapse-service-on-vps/images/element-misconfigured.jpg, /setting-up-your-own-matrix-synapse-service-on-vps/images/element-misconfigured.jpg 1.5x, /setting-up-your-own-matrix-synapse-service-on-vps/images/element-misconfigured.jpg 2x"
+        data-sizes="auto"
+        alt="/setting-up-your-own-matrix-synapse-service-on-vps/images/element-misconfigured.jpg"
+        title="/setting-up-your-own-matrix-synapse-service-on-vps/images/element-misconfigured.jpg" width="566" height="338" /></p>
+<h2 id="4-upgrade">4. Upgrade</h2>
+<p>Upgrading synapse to the latest version is just like upgrading other softwares on ubuntu, Executing apt full-upgrade would do the job. But before doing that, make sure to backup your <code>homeserver.ymal</code> and then press n when asked wheather or not to replace the config file.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-synapse-py3.jpg"
+        data-srcset="/setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-synapse-py3.jpg, /setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-synapse-py3.jpg 1.5x, /setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-synapse-py3.jpg 2x"
+        data-sizes="auto"
+        alt="/setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-synapse-py3.jpg"
+        title="/setting-up-your-own-matrix-synapse-service-on-vps/images/matrix-synapse-py3.jpg" width="755" height="526" /></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2022-05-24</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/setting-up-your-own-matrix-synapse-service-on-vps/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://sudo.by/setting-up-your-own-matrix-synapse-service-on-vps/" data-title="Setting up your own Matrix Synapse  service on VPS" data-via="xxxx" data-hashtags="fediverse,matrix,synapse,ubuntu,vps"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://sudo.by/setting-up-your-own-matrix-synapse-service-on-vps/" data-hashtag="fediverse"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://sudo.by/setting-up-your-own-matrix-synapse-service-on-vps/" data-title="Setting up your own Matrix Synapse  service on VPS"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://sudo.by/setting-up-your-own-matrix-synapse-service-on-vps/" data-title="Setting up your own Matrix Synapse  service on VPS"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://sudo.by/setting-up-your-own-matrix-synapse-service-on-vps/" data-title="Setting up your own Matrix Synapse  service on VPS"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/fediverse/">fediverse</a>,&nbsp;<a href="/tags/matrix/">matrix</a>,&nbsp;<a href="/tags/synapse/">synapse</a>,&nbsp;<a href="/tags/ubuntu/">ubuntu</a>,&nbsp;<a href="/tags/vps/">vps</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/setup-mail-server-on-vps/" class="prev" rel="prev" title="使用Maddy搭建自己的邮箱服务"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>使用Maddy搭建自己的邮箱服务</a>
+            <a href="/moving-to-hugo/" class="next" rel="next" title="Moving to Hugo">Moving to Hugo<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.101.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2004 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Tristan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css"><link rel="stylesheet" href="/lib/aplayer/dark.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{"valine":{"appId":"gXWOeYv428Pc5bCzud5roEX3-MdYXbMMI","appKey":"uVbVKxBPBfh2Qr39kYidupjD","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"en","pageSize":10,"placeholder":"Your comment ...","recordIP":true,"serverURLs":"https://leancloud.hugoloveit.com","visitor":true}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.en","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

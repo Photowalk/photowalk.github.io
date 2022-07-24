@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>使用Maddy搭建自己的邮箱服务 - Blog</title><meta name="Description" content="Hugo theme - LoveIt"><meta property="og:title" content="使用Maddy搭建自己的邮箱服务" />
+<meta property="og:description" content="1 准备工作 1.1 服务器要求 搭建以前，一定要确认自己的vps是否开通了25端口，以及是否可以设置rDNS，否则下面不用看了。我使用的racknerd的VPS，一年只需要10美元左右，符合搭建的要求，推荐大家在这家注册使用。
+使用Maddy搭建邮箱服务挺方便，这里记录下，供以后再搭建时使用。 注意将文中example.org域名替换成自己的1.2 域名设置 先设置二级域名，mx.example.com，A记录和AAAA记录分别指向服务器ipv4地址和ipv6地址。然后设置根域名(@)mx记录，指向mx.example.com
+2 安装maddy 2.1 下载 这里使用Maddy编译好的文件进行。先下载并解压缩（目前是0.5.4版本）:
+1 2 3 4 5 6 7 8 wget https://github.com/foxcpp/maddy/releases/download/v0.5.4/maddy-0.5.4-x86_64-linux-musl.tar.zst apt install zstd tar --use-compress-program=unzstd -xvf maddy-0.5.4-x86_64-linux-musl.tar.zst cd maddy-0.5.4-x86_64-linux-musl mv maddy maddyctl /usr/local/bin/ mkdir /etc/maddy &amp;&amp; mv maddy.conf /etc/maddy/ mv systemd/*.service /usr/lib/systemd/system/ mv man/*.1 /usr/share/man/man1/ &amp;&amp; mv man/*.5 /usr/share/man/man5/ 运行tree命令，可以看到maddy目录结构很简单，主要是maddy和maddyctl两个可执行文件和maddy.conf配置文件
+2.2 添加程序用户 为Maddy程序添加一个单独的用户并且授予权限:
+1 2 useradd -mrU -s /sbin/nologin -c &#34;maddy mail server&#34; maddy chown -R maddy:maddy /usr/local/bin/maddy* /etc/maddy 2." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sudo.by/setup-mail-server-on-vps/" /><meta property="og:image" content="https://sudo.by/setup-mail-server-on-vps/images/featured-image.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-05-19T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-05-19T00:00:00+00:00" /><meta property="og:site_name" content="Blog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://sudo.by/setup-mail-server-on-vps/images/featured-image.png"/>
+<meta name="twitter:title" content="使用Maddy搭建自己的邮箱服务"/>
+<meta name="twitter:description" content="1 准备工作 1.1 服务器要求 搭建以前，一定要确认自己的vps是否开通了25端口，以及是否可以设置rDNS，否则下面不用看了。我使用的racknerd的VPS，一年只需要10美元左右，符合搭建的要求，推荐大家在这家注册使用。
+使用Maddy搭建邮箱服务挺方便，这里记录下，供以后再搭建时使用。 注意将文中example.org域名替换成自己的1.2 域名设置 先设置二级域名，mx.example.com，A记录和AAAA记录分别指向服务器ipv4地址和ipv6地址。然后设置根域名(@)mx记录，指向mx.example.com
+2 安装maddy 2.1 下载 这里使用Maddy编译好的文件进行。先下载并解压缩（目前是0.5.4版本）:
+1 2 3 4 5 6 7 8 wget https://github.com/foxcpp/maddy/releases/download/v0.5.4/maddy-0.5.4-x86_64-linux-musl.tar.zst apt install zstd tar --use-compress-program=unzstd -xvf maddy-0.5.4-x86_64-linux-musl.tar.zst cd maddy-0.5.4-x86_64-linux-musl mv maddy maddyctl /usr/local/bin/ mkdir /etc/maddy &amp;&amp; mv maddy.conf /etc/maddy/ mv systemd/*.service /usr/lib/systemd/system/ mv man/*.1 /usr/share/man/man1/ &amp;&amp; mv man/*.5 /usr/share/man/man5/ 运行tree命令，可以看到maddy目录结构很简单，主要是maddy和maddyctl两个可执行文件和maddy.conf配置文件
+2.2 添加程序用户 为Maddy程序添加一个单独的用户并且授予权限:
+1 2 useradd -mrU -s /sbin/nologin -c &#34;maddy mail server&#34; maddy chown -R maddy:maddy /usr/local/bin/maddy* /etc/maddy 2."/>
+<meta name="application-name" content="LoveIt">
+<meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://sudo.by/setup-mail-server-on-vps/" /><link rel="prev" href="https://sudo.by/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/" /><link rel="next" href="https://sudo.by/setting-up-your-own-matrix-synapse-service-on-vps/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "使用Maddy搭建自己的邮箱服务",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/sudo.by\/setup-mail-server-on-vps\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "https:\/\/sudo.by\/setup-mail-server-on-vps\/images\/featured-image.png",
+                            "width":  940 ,
+                            "height":  547 
+                        }],"genre": "posts","keywords": "email, maddy, smtp, vps","wordcount":  277 ,
+        "url": "https:\/\/sudo.by\/setup-mail-server-on-vps\/","datePublished": "2022-05-19T00:00:00+00:00","dateModified": "2022-05-19T00:00:00+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/sudo.by\/images\/avatar.png",
+                    "width":  647 ,
+                    "height":  610 
+                }},"author": {
+                "@type": "Person",
+                "name": "Tristan"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="https://hugoloveit.com/zh-cn/categories/documentation/" rel="noopener noreffer" target="_blank"> Docs </a><a class="menu-item" href="/about/"> About </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw" aria-hidden="true"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/setup-mail-server-on-vps/" selected>English</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="https://hugoloveit.com/zh-cn/categories/documentation/" title="" rel="noopener noreffer" target="_blank">Docs</a><a class="menu-item" href="/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="Select Language">English<i class="fas fa-chevron-right fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/setup-mail-server-on-vps/" selected>English</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">使用Maddy搭建自己的邮箱服务</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Tristan</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-05-19">2022-05-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;277 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;2 minutes&nbsp;<span id="/setup-mail-server-on-vps/" class="leancloud_visitors" data-flag-title="使用Maddy搭建自己的邮箱服务">
+                        <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;views
+                    </span>&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/setup-mail-server-on-vps/images/featured-image.png"
+        data-srcset="/setup-mail-server-on-vps/images/featured-image.png, /setup-mail-server-on-vps/images/featured-image.png 1.5x, /setup-mail-server-on-vps/images/featured-image.png 2x"
+        data-sizes="auto"
+        alt="/setup-mail-server-on-vps/images/featured-image.png"
+        title="/setup-mail-server-on-vps/images/featured-image.png" /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-准备工作">1 准备工作</a>
+      <ul>
+        <li><a href="#11-服务器要求">1.1 服务器要求</a></li>
+        <li><a href="#12-域名设置">1.2 域名设置</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-安装maddy">2 安装maddy</a>
+      <ul>
+        <li><a href="#21-下载">2.1 下载</a></li>
+        <li><a href="#22-添加程序用户">2.2 添加程序用户</a></li>
+        <li><a href="#23-获取ssl证书">2.3 获取SSL证书</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-配置maddy">3 配置Maddy</a>
+      <ul>
+        <li><a href="#31-添加域名">3.1 添加域名</a></li>
+        <li><a href="#32-添加邮箱用户">3.2 添加邮箱用户</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-启动maddy服务">4 启动maddy服务:</a>
+      <ul>
+        <li><a href="#41-启动服务">4.1 启动服务</a></li>
+        <li><a href="#42-客户端配置">4.2 客户端配置</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-更多配置">5 更多配置</a>
+      <ul>
+        <li><a href="#51-防止邮件进入垃圾箱">5.1 防止邮件进入垃圾箱</a></li>
+        <li><a href="#52-设置开机启动">5.2 设置开机启动</a></li>
+        <li><a href="#53-更多设置">5.3 更多设置</a></li>
+        <li><a href="#54-版本升级">5.4 版本升级</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="1-准备工作">1 准备工作</h2>
+<h3 id="11-服务器要求">1.1 服务器要求</h3>
+<p>搭建以前，一定要确认自己的vps是否开通了25端口，以及是否可以设置rDNS，否则下面不用看了。我使用的<a href="https://my.racknerd.com/aff.php?aff=2538" target="_blank" rel="noopener noreffer">racknerd的VPS</a>，一年只需要10美元左右，符合搭建的要求，推荐大家在这家注册使用。</p>
+<p>使用<a href="https://maddy.email/" target="_blank" rel="noopener noreffer">Maddy</a>搭建邮箱服务挺方便，这里记录下，供以后再搭建时使用。
+<div class="details admonition tip open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-lightbulb fa-fw" aria-hidden="true"></i>注意<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">将文中<strong>example.org</strong>域名替换成自己的</div>
+        </div>
+    </div></p>
+<h3 id="12-域名设置">1.2 域名设置</h3>
+<p>先设置二级域名，mx.example.com，A记录和AAAA记录分别指向服务器ipv4地址和ipv6地址。然后设置根域名(@)mx记录，指向mx.example.com</p>
+<h2 id="2-安装maddy">2 安装maddy</h2>
+<h3 id="21-下载">2.1 下载</h3>
+<p>这里使用Maddy编译好的<a href="https://github.com/foxcpp/maddy/releases" target="_blank" rel="noopener noreffer">文件</a>进行。先下载并解压缩（目前是0.5.4版本）:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">wget https://github.com/foxcpp/maddy/releases/download/v0.5.4/maddy-0.5.4-x86_64-linux-musl.tar.zst
+</span></span><span class="line"><span class="cl">apt install zstd
+</span></span><span class="line"><span class="cl">tar --use-compress-program<span class="o">=</span>unzstd -xvf maddy-0.5.4-x86_64-linux-musl.tar.zst
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> maddy-0.5.4-x86_64-linux-musl
+</span></span><span class="line"><span class="cl">mv maddy maddyctl /usr/local/bin/
+</span></span><span class="line"><span class="cl">mkdir /etc/maddy <span class="o">&amp;&amp;</span> mv maddy.conf /etc/maddy/
+</span></span><span class="line"><span class="cl">mv systemd/*.service /usr/lib/systemd/system/
+</span></span><span class="line"><span class="cl">mv man/*.1 /usr/share/man/man1/ <span class="o">&amp;&amp;</span> mv man/*.5 /usr/share/man/man5/
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>运行tree命令，可以看到maddy目录结构很简单，主要是maddy和maddyctl两个可执行文件和maddy.conf配置文件</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/setup-mail-server-on-vps/images/tree.jpg"
+        data-srcset="/setup-mail-server-on-vps/images/tree.jpg, /setup-mail-server-on-vps/images/tree.jpg 1.5x, /setup-mail-server-on-vps/images/tree.jpg 2x"
+        data-sizes="auto"
+        alt="/setup-mail-server-on-vps/images/tree.jpg"
+        title="/setup-mail-server-on-vps/images/tree.jpg" width="418" height="325" /></p>
+<h3 id="22-添加程序用户">2.2 添加程序用户</h3>
+<p>为Maddy程序添加一个单独的用户并且授予权限:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">useradd -mrU -s /sbin/nologin -c <span class="s2">&#34;maddy mail server&#34;</span> maddy
+</span></span><span class="line"><span class="cl">chown -R maddy:maddy /usr/local/bin/maddy* /etc/maddy
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="23-获取ssl证书">2.3 获取SSL证书</h3>
+<p>获取证书，需要先停止占用80端口的程序，比如nginx:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">apt install snapd
+</span></span><span class="line"><span class="cl">snap install --classic certbot
+</span></span><span class="line"><span class="cl">certbot certonly --standalone --preferred-challenges http -d mx.example.com
+</span></span><span class="line"><span class="cl">apt install acl
+</span></span><span class="line"><span class="cl">mkdir -p /etc/maddy/certs
+</span></span><span class="line"><span class="cl">mkdir -p /etc/maddy/state
+</span></span><span class="line"><span class="cl">mkdir -p /etc/maddy/runtime
+</span></span><span class="line"><span class="cl">mkdir -p /etc/maddy/log
+</span></span><span class="line"><span class="cl">chown maddy:maddy /etc/maddy -R
+</span></span><span class="line"><span class="cl">setfacl -R -m u:maddy:rX /etc/maddy/certs/
+</span></span><span class="line"><span class="cl">setfacl -R -m u:maddy:rX /etc/letsencrypt/<span class="o">{</span>live,archive<span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> /etc/maddy/certs
+</span></span><span class="line"><span class="cl">ln -s /etc/letsencrypt/live/mx.example.com
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="3-配置maddy">3 配置Maddy</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">nano /etc/maddy/maddy.conf
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="31-添加域名">3.1 添加域名</h3>
+<p>修改以下内容:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="cl"><span class="na">$(hostname)</span> <span class="o">=</span> <span class="s">mx.example.com</span>
+</span></span><span class="line"><span class="cl"><span class="na">$(primary_domain)</span> <span class="o">=</span> <span class="s">example.com</span>
+</span></span><span class="line"><span class="cl"><span class="na">$(local_domains)</span> <span class="o">=</span> <span class="s">$(primary_domain)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>添加以下内容:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="cl"><span class="na">state_dir /etc/maddy/state</span>
+</span></span><span class="line"><span class="cl"><span class="na">runtime_dir /etc/maddy/runtime</span>
+</span></span><span class="line"><span class="cl"><span class="na">log syslog /etc/maddy/log/maddy.log</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>保存，退出。</p>
+<h3 id="32-添加邮箱用户">3.2 添加邮箱用户</h3>
+<p>创建用户和对应的密码:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">maddyctl creds create hi@example.com
+</span></span><span class="line"><span class="cl">maddyctl imap-acct create hi@example.com
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="4-启动maddy服务">4 启动maddy服务:</h2>
+<h3 id="41-启动服务">4.1 启动服务</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">chown maddy:maddy /etc/maddy -R <span class="c1">#这里会再运行一次，不然会报错</span>
+</span></span><span class="line"><span class="cl">service maddy start
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="42-客户端配置">4.2 客户端配置</h3>
+<p>这时候就可以使用thunderbird或者需要smtp服务的程序等工具连接邮箱了。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/setup-mail-server-on-vps/images/starttls_smtp.jpg"
+        data-srcset="/setup-mail-server-on-vps/images/starttls_smtp.jpg, /setup-mail-server-on-vps/images/starttls_smtp.jpg 1.5x, /setup-mail-server-on-vps/images/starttls_smtp.jpg 2x"
+        data-sizes="auto"
+        alt="/setup-mail-server-on-vps/images/starttls_smtp.jpg"
+        title="/setup-mail-server-on-vps/images/starttls_smtp.jpg" width="438" height="674" /><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/setup-mail-server-on-vps/images/ssl_tls_smtp.jpg"
+        data-srcset="/setup-mail-server-on-vps/images/ssl_tls_smtp.jpg, /setup-mail-server-on-vps/images/ssl_tls_smtp.jpg 1.5x, /setup-mail-server-on-vps/images/ssl_tls_smtp.jpg 2x"
+        data-sizes="auto"
+        alt="/setup-mail-server-on-vps/images/ssl_tls_smtp.jpg"
+        title="/setup-mail-server-on-vps/images/ssl_tls_smtp.jpg" width="439" height="676" /></p>
+<h2 id="5-更多配置">5 更多配置</h2>
+<h3 id="51-防止邮件进入垃圾箱">5.1 防止邮件进入垃圾箱</h3>
+<p>为了避免邮件进入垃圾邮箱，域名还需要进行配置:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">新建 _dmarc 的TXT记录，值为 v=DMARC1; p=quarantine; ruf=mailto:hi@example.com
+</span></span><span class="line"><span class="cl">新建 default._domainkey 的TXT记录，值为 /etc/maddy/state/dkim_key/example.com_default.dns 文件的内容，类似于 v=DKIM1; k=rsa; p=MII...AB
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>最后要到VPS主机商那里，设置下rDNS记录，指向mx.example.com，这一步很重要，我使用的<a href="https://my.racknerd.com/aff.php?aff=2538" target="_blank" rel="noopener noreffer">racknerd的vps</a>，一年才10美元左右，可以发ticket让客服将rdns指向你的mx.example.com，一般5分钟左右就能设置好。
+这样一来，邮件不会进垃圾箱了。</p>
+<h3 id="52-设置开机启动">5.2 设置开机启动</h3>
+<p>设置maddy开机启动:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">systemctl <span class="nb">enable</span> maddy
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>更多命令可以使用 maddyctl command -h 查看，比如执行 maddyctl creds -h 可以看到:</p>
+<h3 id="53-更多设置">5.3 更多设置</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">maddyctl creds list  列出当前所有用户
+</span></span><span class="line"><span class="cl">maddyctl creds create name@example.com 创建用户
+</span></span><span class="line"><span class="cl">maddyctl creds remove name@example.com 删除用户
+</span></span><span class="line"><span class="cl">myaddyctl creds password name@example.com 修改密码
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="54-版本升级">5.4 版本升级</h3>
+<p>升级Maddy，将新版本的maddy下载下来，将maddy和maddyctl拷贝到下面目录即可</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">systemctl stop maddy
+</span></span><span class="line"><span class="cl">mv maddy maddyctl /usr/local/bin/
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2022-05-19</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/setup-mail-server-on-vps/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://sudo.by/setup-mail-server-on-vps/" data-title="使用Maddy搭建自己的邮箱服务" data-via="xxxx" data-hashtags="email,maddy,smtp,vps"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://sudo.by/setup-mail-server-on-vps/" data-hashtag="email"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://sudo.by/setup-mail-server-on-vps/" data-title="使用Maddy搭建自己的邮箱服务"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://sudo.by/setup-mail-server-on-vps/" data-title="使用Maddy搭建自己的邮箱服务"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://sudo.by/setup-mail-server-on-vps/" data-title="使用Maddy搭建自己的邮箱服务"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/email/">email</a>,&nbsp;<a href="/tags/maddy/">maddy</a>,&nbsp;<a href="/tags/smtp/">smtp</a>,&nbsp;<a href="/tags/vps/">vps</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/" class="prev" rel="prev" title="降低CPU使用率 让Plex客户端解码"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>降低CPU使用率 让Plex客户端解码</a>
+            <a href="/setting-up-your-own-matrix-synapse-service-on-vps/" class="next" rel="next" title="Setting up your own Matrix Synapse  service on VPS">Setting up your own Matrix Synapse  service on VPS<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.101.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2004 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Tristan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{"valine":{"appId":"gXWOeYv428Pc5bCzud5roEX3-MdYXbMMI","appKey":"uVbVKxBPBfh2Qr39kYidupjD","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"en","pageSize":10,"placeholder":"Your comment ...","recordIP":true,"serverURLs":"https://leancloud.hugoloveit.com","visitor":true}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.en","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>bochs - Tag - Blog</title>
+        <link>https://sudo.by/tags/bochs/</link>
+        <description>bochs - Tag - Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 30 Mar 2006 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sudo.by/tags/bochs/" rel="self" type="application/rss+xml" /><item>
+    <title>自己写一个简单的引导程序</title>
+    <link>https://sudo.by/write-yourself-a-bootloader/</link>
+    <pubDate>Thu, 30 Mar 2006 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/write-yourself-a-bootloader/</guid>
+    <description><![CDATA[学习操作系统应该多动手 操作过程在xp下进行。
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 ;;;;;;;;;;;;;;;;;;;;;;;;文件名boot.asm;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; [ORG 0] jmp 07C0h:start start: mov ax,cs mov ds,ax mov es,ax reset: mov ax,0 mov dl,0 int 13h jc reset read: mov ax,1000h mov es,ax mov bx,0 mov ah,2 mov al,5 mov ch,0 mov cl,2 mov dh,0 mov dl,0 int 13h jc read jmp 1000h:0000 times 510-($-$$) db 0 dw 0AA55h ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;以上是boot.]]></description>
+</item>
+</channel>
+</rss>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>What Is Sudo - Blog</title><meta name="Description" content="Hugo theme - LoveIt"><meta property="og:title" content="What Is Sudo" />
+<meta property="og:description" content="注意本文环境基于Ubuntu20.04系统既然本站域名包含sudo，那么大家就一起了解下sudo这个命令吧。
+sudo这个程序，是由 Bob Coggeshall 和 Cliff Spencer 在上世纪80年左右在一台运行4.1 BSD的机器VAX-11/750上实现的。在随后的岁月中，逐渐演变成了现在的样子。
+首先，当你安装Ubuntu的桌面版或者服务器版本的过程中，系统会让用户输入一个用户名以及密码（很多VPS默认使用root用户），而用户输入的用户名不能是root，这是因为Ubuntu系统中root用户是自带的，并且在你安装好系统后，root用户默认是非激活状态，这也就是有些人在刚装好系统后不知道我的root用户默认密码是多少的原因。
+如果实在想激活root用户，执行 sudo -i ，然后执行 passwd 设置个密码就激活了root用户。
+如果后悔了，可以运行 sudo passwd -dl root 就可以disable root用户了。运行 su 会发现，进不去root用户。
+那么如何使用root的权限来执行命令呢？sudo可以解决这个问题。其实当你进入刚刚安装好的系统后，Ubuntu默认将你创建的用户加入到了sudo用户组，也就是拥有了root的所有权限。
+1. 举个栗子 我们通过个例子来说一下，在我的机器上已经有一个叫 test 的用户，并且在sudo组当中，所以test用户可以执行root的所有可执行的命令。
+1.1 创建用户 首先在机器上先添加一个叫tristan的用户，执行 sudo adduser tristan ,输入密码后一路回车，然后执行 su - tristan 来切换到刚刚创建的用户tristan，接着执行 sudo apt update ，可以看到，新创建的tristan用户是无法使用root权限的，因为不在sudo用户组当中，执行groups可以看到tristan仅仅在tristan这个用户组当中。
+1.2 拉人入伙 此时，切换回有sudo权限的用户 su - test，执行 sudo groups tristan ，可以看到tristan只在他自己的组当中，然后执行 sudo adduser tristan sudo 或者 sudo usermod -aG sudo tristan 来将tristan这个用户加入到sudo组当中，再次执行 sudo groups tristan ，可以看到tristan这个用户已经被加入到了sudo组中，拥有了root权限。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sudo.by/what-is-sudo/" /><meta property="og:image" content="https://sudo.by/what-is-sudo/images/maxresdefault.jpg"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-06-12T17:55:47+08:00" />
+<meta property="article:modified_time" content="2022-06-12T17:55:47+08:00" /><meta property="og:site_name" content="Blog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://sudo.by/what-is-sudo/images/maxresdefault.jpg"/>
+<meta name="twitter:title" content="What Is Sudo"/>
+<meta name="twitter:description" content="注意本文环境基于Ubuntu20.04系统既然本站域名包含sudo，那么大家就一起了解下sudo这个命令吧。
+sudo这个程序，是由 Bob Coggeshall 和 Cliff Spencer 在上世纪80年左右在一台运行4.1 BSD的机器VAX-11/750上实现的。在随后的岁月中，逐渐演变成了现在的样子。
+首先，当你安装Ubuntu的桌面版或者服务器版本的过程中，系统会让用户输入一个用户名以及密码（很多VPS默认使用root用户），而用户输入的用户名不能是root，这是因为Ubuntu系统中root用户是自带的，并且在你安装好系统后，root用户默认是非激活状态，这也就是有些人在刚装好系统后不知道我的root用户默认密码是多少的原因。
+如果实在想激活root用户，执行 sudo -i ，然后执行 passwd 设置个密码就激活了root用户。
+如果后悔了，可以运行 sudo passwd -dl root 就可以disable root用户了。运行 su 会发现，进不去root用户。
+那么如何使用root的权限来执行命令呢？sudo可以解决这个问题。其实当你进入刚刚安装好的系统后，Ubuntu默认将你创建的用户加入到了sudo用户组，也就是拥有了root的所有权限。
+1. 举个栗子 我们通过个例子来说一下，在我的机器上已经有一个叫 test 的用户，并且在sudo组当中，所以test用户可以执行root的所有可执行的命令。
+1.1 创建用户 首先在机器上先添加一个叫tristan的用户，执行 sudo adduser tristan ,输入密码后一路回车，然后执行 su - tristan 来切换到刚刚创建的用户tristan，接着执行 sudo apt update ，可以看到，新创建的tristan用户是无法使用root权限的，因为不在sudo用户组当中，执行groups可以看到tristan仅仅在tristan这个用户组当中。
+1.2 拉人入伙 此时，切换回有sudo权限的用户 su - test，执行 sudo groups tristan ，可以看到tristan只在他自己的组当中，然后执行 sudo adduser tristan sudo 或者 sudo usermod -aG sudo tristan 来将tristan这个用户加入到sudo组当中，再次执行 sudo groups tristan ，可以看到tristan这个用户已经被加入到了sudo组中，拥有了root权限。"/>
+<meta name="application-name" content="LoveIt">
+<meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://sudo.by/what-is-sudo/" /><link rel="prev" href="https://sudo.by/moving-to-hugo/" /><link rel="next" href="https://sudo.by/testt/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "What Is Sudo",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/sudo.by\/what-is-sudo\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "https:\/\/sudo.by\/what-is-sudo\/images\/maxresdefault.jpg",
+                            "width":  1280 ,
+                            "height":  720 
+                        }],"genre": "posts","keywords": "sudo, ubuntu, vps","wordcount":  189 ,
+        "url": "https:\/\/sudo.by\/what-is-sudo\/","datePublished": "2022-06-12T17:55:47+08:00","dateModified": "2022-06-12T17:55:47+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": {
+                    "@type": "ImageObject",
+                    "url": "https:\/\/sudo.by\/images\/avatar.png",
+                    "width":  647 ,
+                    "height":  610 
+                }},"author": {
+                "@type": "Person",
+                "name": "Tristan"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="https://hugoloveit.com/zh-cn/categories/documentation/" rel="noopener noreffer" target="_blank"> Docs </a><a class="menu-item" href="/about/"> About </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw" aria-hidden="true"></i>
+                        <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/what-is-sudo/" selected>English</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Blog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="https://hugoloveit.com/zh-cn/categories/documentation/" title="" rel="noopener noreffer" target="_blank">Docs</a><a class="menu-item" href="/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="Select Language">English<i class="fas fa-chevron-right fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/what-is-sudo/" selected>English</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">What Is Sudo</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Tristan</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-06-12">2022-06-12</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;189 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;One minute&nbsp;<span id="/what-is-sudo/" class="leancloud_visitors" data-flag-title="What Is Sudo">
+                        <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;views
+                    </span>&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/what-is-sudo/images/maxresdefault.jpg"
+        data-srcset="/what-is-sudo/images/maxresdefault.jpg, /what-is-sudo/images/maxresdefault.jpg 1.5x, /what-is-sudo/images/maxresdefault.jpg 2x"
+        data-sizes="auto"
+        alt="/what-is-sudo/images/maxresdefault.jpg"
+        title="/what-is-sudo/images/maxresdefault.jpg" /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-举个栗子">1. 举个栗子</a>
+      <ul>
+        <li><a href="#11-创建用户">1.1 创建用户</a></li>
+        <li><a href="#12-拉人入伙">1.2 拉人入伙</a></li>
+        <li><a href="#13-sudoers介绍">1.3 sudoers介绍</a></li>
+        <li><a href="#14-还是栗子">1.4 还是栗子</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-sudo存在的意义">2. sudo存在的意义</a>
+      <ul>
+        <li><a href="#21-优点">2.1 优点</a></li>
+        <li><a href="#22-缺点">2.2 缺点</a></li>
+        <li><a href="#23-习惯养成">2.3 习惯养成</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p><meting-js server="netease" type="song" id="551533859" theme="#448aff"></meting-js>
+<div class="details admonition tip open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-lightbulb fa-fw" aria-hidden="true"></i>注意<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">本文环境基于Ubuntu20.04系统</div>
+        </div>
+    </div></p>
+<p>既然本站域名包含sudo，那么大家就一起了解下sudo这个命令吧。</p>
+<p>sudo这个程序，是由 Bob Coggeshall 和 Cliff Spencer 在上世纪80年左右在一台运行4.1 BSD的机器VAX-11/750上实现的。在随后的岁月中，逐渐<a href="https://gratisoft.us/sudo/history.html" target="_blank" rel="noopener noreffer">演变</a>成了现在的样子。</p>
+<p>首先，当你安装Ubuntu的桌面版或者服务器版本的过程中，系统会让用户输入一个用户名以及密码（很多VPS默认使用root用户），而用户输入的用户名不能是root，这是因为Ubuntu系统中root用户是自带的，并且在你安装好系统后，root用户默认是非激活状态，这也就是有些人在刚装好系统后不知道我的<strong>root用户默认密码</strong>是多少的原因。</p>
+<p>如果实在想激活root用户，执行 <code>sudo -i</code> ，然后执行 <code>passwd</code> 设置个密码就激活了root用户。</p>
+<p>如果后悔了，可以运行 <code>sudo passwd -dl root</code> 就可以disable root用户了。运行 <code>su</code> 会发现，进不去root用户。</p>
+<p>那么如何使用root的权限来执行命令呢？sudo可以解决这个问题。其实当你进入刚刚安装好的系统后，Ubuntu默认将你创建的用户加入到了sudo用户组，也就是拥有了root的所有权限。</p>
+<h2 id="1-举个栗子">1. 举个栗子</h2>
+<p>我们通过个例子来说一下，在我的机器上已经有一个叫 <code>test</code> 的用户，并且在sudo组当中，所以test用户可以执行root的所有可执行的命令。</p>
+<h3 id="11-创建用户">1.1 创建用户</h3>
+<p>首先在机器上先添加一个叫tristan的用户，执行 <code>sudo adduser tristan</code> ,输入密码后一路回车，然后执行 <code>su - tristan</code> 来切换到刚刚创建的用户tristan，接着执行 <code>sudo apt update</code> ，可以看到，新创建的tristan用户是无法使用root权限的，因为不在sudo用户组当中，执行<code>groups</code>可以看到tristan仅仅在tristan这个用户组当中。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/what-is-sudo/images/tristan.png"
+        data-srcset="/what-is-sudo/images/tristan.png, /what-is-sudo/images/tristan.png 1.5x, /what-is-sudo/images/tristan.png 2x"
+        data-sizes="auto"
+        alt="/what-is-sudo/images/tristan.png"
+        title="/what-is-sudo/images/tristan.png" width="756" height="125" /></p>
+<h3 id="12-拉人入伙">1.2 拉人入伙</h3>
+<p>此时，切换回有sudo权限的用户 <code>su - test</code>，执行 <code>sudo groups tristan</code> ，可以看到tristan只在他自己的组当中，然后执行 <code>sudo adduser tristan sudo</code> 或者 <code>sudo usermod -aG sudo tristan</code> 来将tristan这个用户加入到sudo组当中，再次执行 <code>sudo groups tristan</code> ，可以看到tristan这个用户已经被加入到了sudo组中，拥有了root权限。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/what-is-sudo/images/addingtristantosudogroup.png"
+        data-srcset="/what-is-sudo/images/addingtristantosudogroup.png, /what-is-sudo/images/addingtristantosudogroup.png 1.5x, /what-is-sudo/images/addingtristantosudogroup.png 2x"
+        data-sizes="auto"
+        alt="/what-is-sudo/images/addingtristantosudogroup.png"
+        title="/what-is-sudo/images/addingtristantosudogroup.png" width="775" height="319" /></p>
+<h3 id="13-sudoers介绍">1.3 sudoers介绍</h3>
+<p>而sudo组有哪些权限呢？执行 <code>sudo cat /etc/sudoers</code> 可以看到下面的内容</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/what-is-sudo/images/sudoers.png"
+        data-srcset="/what-is-sudo/images/sudoers.png, /what-is-sudo/images/sudoers.png 1.5x, /what-is-sudo/images/sudoers.png 2x"
+        data-sizes="auto"
+        alt="/what-is-sudo/images/sudoers.png"
+        title="/what-is-sudo/images/sudoers.png" width="591" height="169" /></p>
+<p>第一印象是，怎么这么多ALL？</p>
+<ul>
+<li>
+<p>第一个ALL可以理解为代表本机，括号里的第一个ALL代表所有用户，冒号后面的ALL代表所有组，括号后面的ALL代表所有命令。</p>
+</li>
+<li>
+<p><code>root</code> 开头的这行的意思是，root用户可以执行<strong>本机</strong>上<strong>所有</strong>群组里面<strong>所有</strong>用户可以执行的<strong>所有</strong>命令。</p>
+</li>
+<li>
+<p><code>%admin</code> 中%代表群组，这样的意思就是 <code>admin</code> 这个组的用户可以执行所有命令。</p>
+</li>
+<li>
+<p>最关键的是 <code>%sudo</code> 这行，意思和 <code>%admin</code> 这行一样，可以执行所有权限。</p>
+</li>
+</ul>
+<p>那么为什么既然有了 <code>admin</code> 这个组，还会有 <code>sudo</code>这个组呢？这个是ubuntu的历史遗留问题，根据Ubuntu 12.04 LTS的<a href="https://wiki.ubuntu.com/PrecisePangolin/ReleaseNotes/UbuntuDesktop#PrecisePangolin.2FReleaseNotes.2FCommonInfrastructure.Common_Infrastructure" target="_blank" rel="noopener noreffer">release note</a>中，说在Ubuntu 11.10之前，一直使用的admin这个组，但是从12.04开始使用sudo这个组了。包括 <code>%admin</code> 这行的写法和其他行不一样，应该也是同样的原因。好像Debian中从未有过 <code>admin</code> 这个组，一直都是 <code>sudo</code> 这个组，并且Debian系统中root用户是默认激活的。</p>
+<h3 id="14-还是栗子">1.4 还是栗子</h3>
+<p>知道了 <code>/etc/sudoers</code> 这个文件，就可以解决下面的问题了，如果只想给某个用户分配部分只能root权限执行的程序，只需要在root这样下面加上用户名和想赋予执行程序的路径就可以了。编辑这个文件时，最好使用 <code>visudo</code> 命令，这个工具可以避免多人同时编辑sudoers文件，并且带有语法检查功能。</p>
+<p>比如，我们在机器上添加 <code>test2</code> 这个用户，如何在不把他加入sudo组的前提下执行sudo apt update命令呢？</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo adduser test2
+</span></span><span class="line"><span class="cl">sudo groups test2  <span class="c1">#查看test2用户的群组</span>
+</span></span><span class="line"><span class="cl">sudo visudo
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在root这行下面加入一行</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">test2   ALL=(ALL:ALL) /usr/bin/apt
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/what-is-sudo/images/addtest2apt.png"
+        data-srcset="/what-is-sudo/images/addtest2apt.png, /what-is-sudo/images/addtest2apt.png 1.5x, /what-is-sudo/images/addtest2apt.png 2x"
+        data-sizes="auto"
+        alt="/what-is-sudo/images/addtest2apt.png"
+        title="/what-is-sudo/images/addtest2apt.png" width="543" height="66" /></p>
+<p>保存退出，然后切换到新创建的 <code>test2</code> 用户，<code> su - test2</code> ，就可以执行 <code>apt update</code>命令了，运行 <code>groups</code> 命令可以发现，<code>test2</code> 用户不在sudo组当中，所以无法执行 <code>apt update</code> 命令。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/what-is-sudo/images/executeaptcommandwithoutbeinginsudogroup.png"
+        data-srcset="/what-is-sudo/images/executeaptcommandwithoutbeinginsudogroup.png, /what-is-sudo/images/executeaptcommandwithoutbeinginsudogroup.png 1.5x, /what-is-sudo/images/executeaptcommandwithoutbeinginsudogroup.png 2x"
+        data-sizes="auto"
+        alt="/what-is-sudo/images/executeaptcommandwithoutbeinginsudogroup.png"
+        title="/what-is-sudo/images/executeaptcommandwithoutbeinginsudogroup.png" width="673" height="802" /></p>
+<p>试着执行下其他root命令：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/what-is-sudo/images/nootherpermissions.png"
+        data-srcset="/what-is-sudo/images/nootherpermissions.png, /what-is-sudo/images/nootherpermissions.png 1.5x, /what-is-sudo/images/nootherpermissions.png 2x"
+        data-sizes="auto"
+        alt="/what-is-sudo/images/nootherpermissions.png"
+        title="/what-is-sudo/images/nootherpermissions.png" width="911" height="69" /></p>
+<p>可以看到，没有权限。</p>
+<p>可以执行 <code>sudo -l</code> 查看当前用户都可以执行哪些root才能执行的命令</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/what-is-sudo/images/sudo-l.png"
+        data-srcset="/what-is-sudo/images/sudo-l.png, /what-is-sudo/images/sudo-l.png 1.5x, /what-is-sudo/images/sudo-l.png 2x"
+        data-sizes="auto"
+        alt="/what-is-sudo/images/sudo-l.png"
+        title="/what-is-sudo/images/sudo-l.png" width="929" height="151" /></p>
+<p>如果你觉得执行需要输入密码比较麻烦的话，可以将sudoers里面的写成下面这样：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">test2   ALL=(ALL:ALL) NOPASSWD: /usr/bin/apt
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="2-sudo存在的意义">2. sudo存在的意义</h2>
+<p>既然用户可以添加sudo来执行root才能执行的命令，那么sudo存在的意义是什么呢？其实，包括我在内，尤其是在VPS上时候，都是直接root登录的。</p>
+<h3 id="21-优点">2.1 优点</h3>
+<p>使用sudo而不直接使用root用户的优点有下面几个</p>
+<ul>
+<li>不用单独再记住root的密码，哪怕root用户默认没有激活也可以。</li>
+<li>网络上那些频繁尝试通过暴力破解登录你VPS的人只知道root这个用户一定存在，而不知道你有sudo权限的用户名是什么，就像Ubuntu这样默认禁止root用户的情况下，有人想暴力破解你VPS的密码，还必须知道你的用户名是什么，这样概率会小很多很多。</li>
+<li>当删除用户时方便，直接删除有sudo权限的用户即可，如果直接使用root用户，还得修改root密码，这样给其他人造成不便。</li>
+<li>可以赋予某个用户执行部分sudo程序的权限，就像上面例子展示的一样。</li>
+<li>每个用户可以根据自己习惯修改自己的配置文件，比如vi等很多软件，如果都使用root，会造成不便。</li>
+</ul>
+<h3 id="22-缺点">2.2 缺点</h3>
+<ul>
+<li>命令行提示符前面的名称不是root，看着不爽啊。</li>
+<li>运行sudo需要经常输入密码，也不爽。尽管可以在/etc/sudoers文件中设置下不输入密码。</li>
+<li>运行命令时经常忘记打sudo，这时候可以使用 <code>sudo !!</code>而不用按上箭头，再在命令行前面加sudo了。</li>
+</ul>
+<h3 id="23-习惯养成">2.3 习惯养成</h3>
+<p>就VPS而言，这样做更安全：</p>
+<ul>
+<li>ssh配置文件中屏蔽root登录</li>
+<li>Ubuntu中再将root用户设为非激活状态</li>
+<li>屏蔽密码登录，只允许证书登录</li>
+<li>证书必须加密，否则证书万一被其他人知道了，麻烦就到了。</li>
+</ul>
+<p>更多关于sudo的可以看man.</p>
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube-nocookie.com/embed/zE7PKRjrid4" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2022-06-12</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/what-is-sudo/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://sudo.by/what-is-sudo/" data-title="What Is Sudo" data-via="xxxx" data-hashtags="sudo,ubuntu,vps"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://sudo.by/what-is-sudo/" data-hashtag="sudo"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://sudo.by/what-is-sudo/" data-title="What Is Sudo"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://sudo.by/what-is-sudo/" data-title="What Is Sudo"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://sudo.by/what-is-sudo/" data-title="What Is Sudo"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/sudo/">sudo</a>,&nbsp;<a href="/tags/ubuntu/">ubuntu</a>,&nbsp;<a href="/tags/vps/">vps</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/moving-to-hugo/" class="prev" rel="prev" title="Moving to Hugo"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Moving to Hugo</a>
+            <a href="/testt/" class="next" rel="next" title="Testt">Testt<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.101.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2004 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Tristan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css"><link rel="stylesheet" href="/lib/aplayer/dark.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{"valine":{"appId":"gXWOeYv428Pc5bCzud5roEX3-MdYXbMMI","appKey":"uVbVKxBPBfh2Qr39kYidupjD","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"en","pageSize":10,"placeholder":"Your comment ...","recordIP":true,"serverURLs":"https://leancloud.hugoloveit.com","visitor":true}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.en","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

@@ -1,0 +1,29 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>qnap - Tag - Blog</title>
+        <link>https://sudo.by/tags/qnap/</link>
+        <description>qnap - Tag - Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 09 Apr 2020 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sudo.by/tags/qnap/" rel="self" type="application/rss+xml" /><item>
+    <title>降低CPU使用率 让Plex客户端解码</title>
+    <link>https://sudo.by/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/</link>
+    <pubDate>Thu, 09 Apr 2020 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/</guid>
+    <description><![CDATA[1. 硬件介绍 Plex给人的印象是需要服务器端转码，这给很多人造成了错误的印象，前几天入手了终身Plex Pass，随即折腾起来，发现Plex完全可以像Kodi一样使用客户端解码，降低服务器端的CPU占用率，加上Plex本身漂亮的UI界面和强大的数据刮削能力，Plex在Emby(收费), Jellyfin(全免费), 和Kodi(全免费，太丑，弃)的竞争中，完全不落下风。
+我的硬件：一台小的Home Box，配置是i3-7100u(Intel Kaby Lake), 8G内存。一台家用NAS，QNAP NAS 453B mini一台，10G内存, 处理器是J3455(Intel Apollo Lake), 8G内存。
+处理器是i3-7100的Home Box安装了Esxi，上面安装了Openwrt和Ubuntu server（ubuntu里又装了Plex服务器端）以及其它系统。也就是所说的软路由中安装Plex服务器。
+Ubuntu server和QNAP上都安装了Plex server，这里使用Ubuntu中的Plex server来测试，NAS仅仅作为一个存储设备。
+i3-7100U的核显是HD 620, 而QNAP NAS的处理器是J3455，核显是HD 500。两款核显均支持4K分辨率下H.264的转码transcoding（包括解码decoding和编码encoding），而对于, H.265(HEVC)编码，只有HD620的也就是7100u支持转码，J3455仅仅支持解码（支持播放）。具体核显的性能区别可以看这里以及这里。所以不论是自己组件NAS还是购买现成的NAS，CPU是非常关键的，CPU越新，核显越新，才能更大幅度的降低CPU的使用率。
+2.开始 2.1 软路由Ubuntu系统挂载NAS硬盘 首先在Ubuntu中挂载NAS中共享的电影文件夹：
+1 2 3 4 5 apt install nfs-common #安装nfs showmount -e 192.168.1.99 #看下nas哪些目录是共享可挂载的。 mkdir /mnt/qnap #在ubuntu中创建文件夹qnap，用来挂在qnap的共享文件夹 mount 192.168.1.99:/电影共享 /mnt/qnap #将nas共享的电影共享目录挂在到linux的qnap目录上。 apt install ffmpeg intel-gpu-tools #安装解码器和查看intel显卡占用率程序 2.2 显卡直通设置 ESXI中先允许核显直通修改Ubuntu server的显卡信息，将默认的修改为FALSE修改Ubuntu配置，添加PCI设备，然后选择刚才直通的显卡即可进入Ubuntu后，运行lspci | grep -i vga，发现核显直通成功随后安装Plex的Ubuntu服务器端和手机或者PC的客户端，此处略过&hellip;，需要注意的是，媒体文件夹选择刚才挂载的NAS文件夹即可。]]></description>
+</item>
+<item>
+    <title>使用qnap nas的hbs 3同步onedrive googledrive等网盘内容</title>
+    <link>https://sudo.by/%E4%BD%BF%E7%94%A8qnap-nas%E7%9A%84hbs-3%E5%90%8C%E6%AD%A5onedrive-googledrive%E7%AD%89%E7%BD%91%E7%9B%98%E5%86%85%E5%AE%B9/</link>
+    <pubDate>Fri, 15 Nov 2019 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/%E4%BD%BF%E7%94%A8qnap-nas%E7%9A%84hbs-3%E5%90%8C%E6%AD%A5onedrive-googledrive%E7%AD%89%E7%BD%91%E7%9B%98%E5%86%85%E5%AE%B9/</guid>
+    <description><![CDATA[QNAP还是不错的，就是界面做的一般般。视频默认油管的，B站地址。]]></description>
+</item>
+</channel>
+</rss>

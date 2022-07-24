@@ -1,0 +1,19 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>一键切换巅峰 - Tag - Blog</title>
+        <link>https://sudo.by/tags/%E4%B8%80%E9%94%AE%E5%88%87%E6%8D%A2%E5%B7%85%E5%B3%B0/</link>
+        <description>一键切换巅峰 - Tag - Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 23 Jun 2018 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sudo.by/tags/%E4%B8%80%E9%94%AE%E5%88%87%E6%8D%A2%E5%B7%85%E5%B3%B0/" rel="self" type="application/rss+xml" /><item>
+    <title>暗黑破坏神3 一键切换巅峰鼠标宏代码详解</title>
+    <link>https://sudo.by/%E6%9A%97%E9%BB%91%E7%A0%B4%E5%9D%8F%E7%A5%9E3-%E4%B8%80%E9%94%AE%E5%88%87%E6%8D%A2%E5%B7%85%E5%B3%B0/</link>
+    <pubDate>Sat, 23 Jun 2018 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/%E6%9A%97%E9%BB%91%E7%A0%B4%E5%9D%8F%E7%A5%9E3-%E4%B8%80%E9%94%AE%E5%88%87%E6%8D%A2%E5%B7%85%E5%B3%B0/</guid>
+    <description><![CDATA[使用罗技的鼠标宏实现在暗黑3中一键切换巅峰的功能，注释很详细了。实例始用野蛮人，一般来说组队死灵法师需要这样的功能。
+需要注意的是，下面最终代码里面的鼠标坐标仅仅适用于我的显示器，至于大家的显示器在游戏中的按钮的坐标，大家可以在将鼠标移动到按钮上后，执行下面代码，看罗技鼠标console输出的数值就是你的坐标了。同时显示的还有你当前按键的编号(实例输出结果arg = 2，也就是你目前按的键在代码里对应的是2这个数字)，也很关键。确定坐标和你想使用的快捷键的在程序宏中对应的编码很关键！
+1 2 3 4 5 function OnEvent(event, arg) x,y = GetMousePosition(); // 获取到当前鼠标位置，并且输出到脚本console界面，为下面获得每个按钮的坐标提供很大的帮助. OutputLogMessage(&#34;event = %s, arg = %s\n&#34;, event, arg); // 输出当前按了哪个按键，同样非常关键. OutputLogMessage(&#34;z = %d, %d\n&#34;, x, y); // 输出当前鼠标坐标到console. end 执行上面的代码，可以看到目前按键信息以及坐标信息，如下图：
+正式代码如下：
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 // 本脚本以野蛮人作为测试，始用罗技G610键盘为例(鼠标同理)说明。实现按键盘的F5键将力量加满，体能为0； // 按F6键将体能加满，力量为0.]]></description>
+</item>
+</channel>
+</rss>

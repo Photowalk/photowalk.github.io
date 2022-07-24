@@ -1,0 +1,137 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>All Posts - Blog</title>
+        <link>https://sudo.by/posts/</link>
+        <description>All Posts | Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 24 Jul 2022 10:01:10 &#43;0800</lastBuildDate><atom:link href="https://sudo.by/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>Testt</title>
+    <link>https://sudo.by/testt/</link>
+    <pubDate>Sun, 24 Jul 2022 10:01:10 &#43;0800</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/testt/</guid>
+    <description><![CDATA[damn test]]></description>
+</item>
+<item>
+    <title>What Is Sudo</title>
+    <link>https://sudo.by/what-is-sudo/</link>
+    <pubDate>Sun, 12 Jun 2022 17:55:47 &#43;0800</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/what-is-sudo/</guid>
+    <description><![CDATA[注意本文环境基于Ubuntu20.04系统既然本站域名包含sudo，那么大家就一起了解下sudo这个命令吧。
+sudo这个程序，是由 Bob Coggeshall 和 Cliff Spencer 在上世纪80年左右在一台运行4.1 BSD的机器VAX-11/750上实现的。在随后的岁月中，逐渐演变成了现在的样子。
+首先，当你安装Ubuntu的桌面版或者服务器版本的过程中，系统会让用户输入一个用户名以及密码（很多VPS默认使用root用户），而用户输入的用户名不能是root，这是因为Ubuntu系统中root用户是自带的，并且在你安装好系统后，root用户默认是非激活状态，这也就是有些人在刚装好系统后不知道我的root用户默认密码是多少的原因。
+如果实在想激活root用户，执行 sudo -i ，然后执行 passwd 设置个密码就激活了root用户。
+如果后悔了，可以运行 sudo passwd -dl root 就可以disable root用户了。运行 su 会发现，进不去root用户。
+那么如何使用root的权限来执行命令呢？sudo可以解决这个问题。其实当你进入刚刚安装好的系统后，Ubuntu默认将你创建的用户加入到了sudo用户组，也就是拥有了root的所有权限。
+1. 举个栗子 我们通过个例子来说一下，在我的机器上已经有一个叫 test 的用户，并且在sudo组当中，所以test用户可以执行root的所有可执行的命令。
+1.1 创建用户 首先在机器上先添加一个叫tristan的用户，执行 sudo adduser tristan ,输入密码后一路回车，然后执行 su - tristan 来切换到刚刚创建的用户tristan，接着执行 sudo apt update ，可以看到，新创建的tristan用户是无法使用root权限的，因为不在sudo用户组当中，执行groups可以看到tristan仅仅在tristan这个用户组当中。
+1.2 拉人入伙 此时，切换回有sudo权限的用户 su - test，执行 sudo groups tristan ，可以看到tristan只在他自己的组当中，然后执行 sudo adduser tristan sudo 或者 sudo usermod -aG sudo tristan 来将tristan这个用户加入到sudo组当中，再次执行 sudo groups tristan ，可以看到tristan这个用户已经被加入到了sudo组中，拥有了root权限。]]></description>
+</item>
+<item>
+    <title>Moving to Hugo</title>
+    <link>https://sudo.by/moving-to-hugo/</link>
+    <pubDate>Sat, 11 Jun 2022 21:15:13 &#43;0800</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/moving-to-hugo/</guid>
+    <description><![CDATA[把博客从WordPress搬家到了hugo，托管到了Github上，耗时一天。近期还会研究下hugo和这个主题，添加一些CSS。
+原来的博客和域名还会继续存在，但是可能不会更新了。
+最近搭建了Mastodon和Matrix。发现Mastodon使用频率高很多，而Matrix使用下来体验一般般，客户端还需要加把劲，synapse使用python写的，同步人数较多的群的历史信息时会比较慢，并且加入一个大群时，很多时候会失败。
+Pixelfed实例近期也会上线。
+1 2 3 4 5 6 7 8 9 10 git remote -v git remote rm origin git remote add origin git@github.com:photowalk/photowalk.github.io.git hugo new posts/test/index.md hugo server -D #本地预览 localhost:1313 hugo cd public git add . git commit -m &#39;change note&#39; git push -u origin master 今年得想办法置办个这玩意儿，从第一代出来就想买了 ]]></description>
+</item>
+<item>
+    <title>Setting up your own Matrix Synapse  service on VPS</title>
+    <link>https://sudo.by/setting-up-your-own-matrix-synapse-service-on-vps/</link>
+    <pubDate>Tue, 24 May 2022 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/setting-up-your-own-matrix-synapse-service-on-vps/</guid>
+    <description><![CDATA[For the past one month, I&rsquo;ve been digging around the internet about the decentralized fediverse community. Platforms like Mastodon, Matrix Synapse, Pixelfed etc are the open-source implementations of twitter, IMs like telegram Signal and instagram, and more importantly these platforms are all decentralized, which means your posts/pics/blog/account belongs to yourself, and won&rsquo;t be deleted by those BIG companies for no reason, especially those stupid companies in China like weibo, bilibili, douyin etc.]]></description>
+</item>
+<item>
+    <title>使用Maddy搭建自己的邮箱服务</title>
+    <link>https://sudo.by/setup-mail-server-on-vps/</link>
+    <pubDate>Thu, 19 May 2022 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/setup-mail-server-on-vps/</guid>
+    <description><![CDATA[1 准备工作 1.1 服务器要求 搭建以前，一定要确认自己的vps是否开通了25端口，以及是否可以设置rDNS，否则下面不用看了。我使用的racknerd的VPS，一年只需要10美元左右，符合搭建的要求，推荐大家在这家注册使用。
+使用Maddy搭建邮箱服务挺方便，这里记录下，供以后再搭建时使用。 注意将文中example.org域名替换成自己的1.2 域名设置 先设置二级域名，mx.example.com，A记录和AAAA记录分别指向服务器ipv4地址和ipv6地址。然后设置根域名(@)mx记录，指向mx.example.com
+2 安装maddy 2.1 下载 这里使用Maddy编译好的文件进行。先下载并解压缩（目前是0.5.4版本）:
+1 2 3 4 5 6 7 8 wget https://github.com/foxcpp/maddy/releases/download/v0.5.4/maddy-0.5.4-x86_64-linux-musl.tar.zst apt install zstd tar --use-compress-program=unzstd -xvf maddy-0.5.4-x86_64-linux-musl.tar.zst cd maddy-0.5.4-x86_64-linux-musl mv maddy maddyctl /usr/local/bin/ mkdir /etc/maddy &amp;&amp; mv maddy.conf /etc/maddy/ mv systemd/*.service /usr/lib/systemd/system/ mv man/*.1 /usr/share/man/man1/ &amp;&amp; mv man/*.5 /usr/share/man/man5/ 运行tree命令，可以看到maddy目录结构很简单，主要是maddy和maddyctl两个可执行文件和maddy.conf配置文件
+2.2 添加程序用户 为Maddy程序添加一个单独的用户并且授予权限:
+1 2 useradd -mrU -s /sbin/nologin -c &#34;maddy mail server&#34; maddy chown -R maddy:maddy /usr/local/bin/maddy* /etc/maddy 2.]]></description>
+</item>
+<item>
+    <title>降低CPU使用率 让Plex客户端解码</title>
+    <link>https://sudo.by/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/</link>
+    <pubDate>Thu, 09 Apr 2020 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/%E9%99%8D%E4%BD%8Ecpu%E4%BD%BF%E7%94%A8%E7%8E%87-%E8%AE%A9plex%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A7%A3%E7%A0%81/</guid>
+    <description><![CDATA[1. 硬件介绍 Plex给人的印象是需要服务器端转码，这给很多人造成了错误的印象，前几天入手了终身Plex Pass，随即折腾起来，发现Plex完全可以像Kodi一样使用客户端解码，降低服务器端的CPU占用率，加上Plex本身漂亮的UI界面和强大的数据刮削能力，Plex在Emby(收费), Jellyfin(全免费), 和Kodi(全免费，太丑，弃)的竞争中，完全不落下风。
+我的硬件：一台小的Home Box，配置是i3-7100u(Intel Kaby Lake), 8G内存。一台家用NAS，QNAP NAS 453B mini一台，10G内存, 处理器是J3455(Intel Apollo Lake), 8G内存。
+处理器是i3-7100的Home Box安装了Esxi，上面安装了Openwrt和Ubuntu server（ubuntu里又装了Plex服务器端）以及其它系统。也就是所说的软路由中安装Plex服务器。
+Ubuntu server和QNAP上都安装了Plex server，这里使用Ubuntu中的Plex server来测试，NAS仅仅作为一个存储设备。
+i3-7100U的核显是HD 620, 而QNAP NAS的处理器是J3455，核显是HD 500。两款核显均支持4K分辨率下H.264的转码transcoding（包括解码decoding和编码encoding），而对于, H.265(HEVC)编码，只有HD620的也就是7100u支持转码，J3455仅仅支持解码（支持播放）。具体核显的性能区别可以看这里以及这里。所以不论是自己组件NAS还是购买现成的NAS，CPU是非常关键的，CPU越新，核显越新，才能更大幅度的降低CPU的使用率。
+2.开始 2.1 软路由Ubuntu系统挂载NAS硬盘 首先在Ubuntu中挂载NAS中共享的电影文件夹：
+1 2 3 4 5 apt install nfs-common #安装nfs showmount -e 192.168.1.99 #看下nas哪些目录是共享可挂载的。 mkdir /mnt/qnap #在ubuntu中创建文件夹qnap，用来挂在qnap的共享文件夹 mount 192.168.1.99:/电影共享 /mnt/qnap #将nas共享的电影共享目录挂在到linux的qnap目录上。 apt install ffmpeg intel-gpu-tools #安装解码器和查看intel显卡占用率程序 2.2 显卡直通设置 ESXI中先允许核显直通修改Ubuntu server的显卡信息，将默认的修改为FALSE修改Ubuntu配置，添加PCI设备，然后选择刚才直通的显卡即可进入Ubuntu后，运行lspci | grep -i vga，发现核显直通成功随后安装Plex的Ubuntu服务器端和手机或者PC的客户端，此处略过&hellip;，需要注意的是，媒体文件夹选择刚才挂载的NAS文件夹即可。]]></description>
+</item>
+<item>
+    <title>使用qnap nas的hbs 3同步onedrive googledrive等网盘内容</title>
+    <link>https://sudo.by/%E4%BD%BF%E7%94%A8qnap-nas%E7%9A%84hbs-3%E5%90%8C%E6%AD%A5onedrive-googledrive%E7%AD%89%E7%BD%91%E7%9B%98%E5%86%85%E5%AE%B9/</link>
+    <pubDate>Fri, 15 Nov 2019 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/%E4%BD%BF%E7%94%A8qnap-nas%E7%9A%84hbs-3%E5%90%8C%E6%AD%A5onedrive-googledrive%E7%AD%89%E7%BD%91%E7%9B%98%E5%86%85%E5%AE%B9/</guid>
+    <description><![CDATA[QNAP还是不错的，就是界面做的一般般。视频默认油管的，B站地址。]]></description>
+</item>
+<item>
+    <title>域名如何开启HTTPS,HTTP/2以及HSTS</title>
+    <link>https://sudo.by/how-to-enable-https-http2-hsts/</link>
+    <pubDate>Fri, 01 Nov 2019 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/how-to-enable-https-http2-hsts/</guid>
+    <description><![CDATA[对于站长，配置域名的https, http/2以及hsts是家常便饭，之前的博客说过，这里使用免费的let&rsquo;s encrypt来演示，环境是ubuntu18.04 + nginx，域名使用lijie.org，下面的命令替换成自己的域名即可。
+开启https 1 2 3 4 5 6 7 8 sudo add-apt-repository ppa:certbot/certbot #将let&#39;s encrypt加入ubuntu软件源,ubuntu 18.04及之前版本，ubuntu20.04方法如下 sudo apt-get update #更新列表 sudo apt-get install python-certbot-nginx #安装certbot,ubuntu 18.04及之前版本，ubuntu20.04方法如下 apt install certbot python3-certbot-nginx #ubuntu20.04开始直接安装就行，不需要另外添加lets encrypt源。 sudo ufw allow &#39;Nginx Full&#39; #将80, 443端口开启，加入防火墙 sudo certbot --nginx -d lijie.org -d www.lijie.org #使用certbot给两个域名申请ssl 执行上述命令会提示：
+Please choose whether or not to redirect HTTP traffic to HTTPS, removing HTTP access.
+-&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&ndash;
+1: No redirect - Make no further changes to the webserver configuration.]]></description>
+</item>
+<item>
+    <title>如何在ESXI中安装Home Assistant</title>
+    <link>https://sudo.by/install-homeassistant-on-esxi/</link>
+    <pubDate>Sat, 12 Oct 2019 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/install-homeassistant-on-esxi/</guid>
+    <description><![CDATA[家里有个ESXI虚拟化平台的确是方便，除了可以使用软路由，很多系统都可以安装进去，这里简单说下如何在ESXI中安装Home Assistant，网上大部分教程都是在Linux中的docker里跑HA。
+视频演示过程：youtube, B站
+首先到官网下载HA的虚拟机文件
+下载vmdk文件
+将解压缩出来的文件上传到esxi，打开esxi的SSH权限，进入后台，使用下面的命令将vmdk文件转换为esxi可以使用的文件。
+1 vmkfstools -i hassxxx.vmdk 1.vmdk 随后创建虚拟机
+新建虚拟机
+按照框框里的选择好
+然后下一步，下一步。建立好虚拟机后，开始调整虚拟机配置。调整配置很重要。
+删除CD/DVD驱动器，然后添加硬盘，添加现有硬盘，选择上面转换好的1.vmdk文件。删除默认分配的硬盘。 点击硬盘左侧的三角，控制器位置选择IDE控制器0，右侧选择主要。 虚拟机选项下面的引导选项，选择EFI。 记得调整cpu和内存数量。 完成上述的配置调整后，就可以给虚拟机通电了，随后访问hassio.local:8123就能打开HA的首页了。
+如果访问hassio.local:8123无法打开这个页面，等待5-10分钟再访问
+在首页等待一会儿之后，就会自动跳转到管理员设置页面
+以上就是安装的粗略过程。]]></description>
+</item>
+<item>
+    <title>让你的网站使用cloudflare全球加速</title>
+    <link>https://sudo.by/%E8%AE%A9%E4%BD%A0%E7%9A%84%E7%BD%91%E7%AB%99%E4%BD%BF%E7%94%A8cloudflare%E5%85%A8%E7%90%83%E5%8A%A0%E9%80%9F/</link>
+    <pubDate>Sat, 05 Oct 2019 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/%E8%AE%A9%E4%BD%A0%E7%9A%84%E7%BD%91%E7%AB%99%E4%BD%BF%E7%94%A8cloudflare%E5%85%A8%E7%90%83%E5%8A%A0%E9%80%9F/</guid>
+    <description><![CDATA[使用免费版本的cloudflare在大陆都被称为cdn减速，但是从我实际使用来说，减速效果不明显，但是却可以大大提升全球的访问速度。设置合理可以严重降低服务器的负担，对于服务器配置不好，vps本身直连国内速度本身就很慢，以及vps ip被封的人来说，是个神器。
+这里，就如何设置wordpress来说下cloudflare的基础设置。先放个效果图，可以看到绝大多数网站请求都使用了cloudflare的cache。
+深色是使用的cache，浅色是从我的服务器处理的请求
+首先，注册cloudflare，然后修改你域名的两个dns为cloudflare提供给你的。一般十分钟搞定。
+打开cloudflare管理界面，可以看到上面有不少可设置选项，在上面先找到page rules。
+找到Page rules
+免费版本可以使用三条规则，对于wordpress，我感觉两条就足够了。
+第一条告诉cloudflare不缓存wordpress的管理员界面，并且应用上了几条cloudflare的安全检查，可以阻止一些有危险行为的访问。 如果你不是wordpress程序，可以替换成你使用的程序的管理uri。
+第二条，开启除第一条以外所有内容的缓存，缓存时间7天，这样可以极大减轻服务器的负担。尤其是图片，js，css文件等，效果很明显。假如你对某篇文章进行了编辑，可以找到Caching，点击下面的Custom Purge，输入要强制更新的页面地址，这样cloudflare会获取最新修改后的页面，然后在你自己浏览器此页面的URL后面添加个?号，让浏览器也强制刷新缓存。最后记得把首页缓存也purge一下。但是很多清况下，即使你purge了页面，清除了浏览器缓存，但是页面依然没更新，这一点比较恼人。
+注意，Rules是有顺序关系的，不能搞乱。Page rules设置就此完毕。
+其余的cloudflare的设置，这里提一下
+可以将SSL/TLS中Edge Certificates下面的Always Use HTTPS打开。并且将HSTS打开。Automatic HTTPS Rewrites打开。 将Speed中Optimization下面的Auto Minify右侧的Javascript, CSS, HTML全部勾选，并且打开下面的Brotli和Rocket Loader。 将Caching下面的Always Online打开，这样你的服务器短期出现故障，比如重启之类的活动时候，网站访问几乎不受影响。 关于网站使用cloudflare是基本设置就是这样了，其余的要么收费，要么我也看不懂。后续可能会研究下Firewall及Workers的详细用法。网上关于网站测速评分工具看看就好，毕竟这个和你网站使用的图片，模板，插件有很大关系。]]></description>
+</item>
+</channel>
+</rss>

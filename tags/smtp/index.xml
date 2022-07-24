@@ -1,0 +1,20 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>smtp - Tag - Blog</title>
+        <link>https://sudo.by/tags/smtp/</link>
+        <description>smtp - Tag - Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 19 May 2022 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sudo.by/tags/smtp/" rel="self" type="application/rss+xml" /><item>
+    <title>使用Maddy搭建自己的邮箱服务</title>
+    <link>https://sudo.by/setup-mail-server-on-vps/</link>
+    <pubDate>Thu, 19 May 2022 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/setup-mail-server-on-vps/</guid>
+    <description><![CDATA[1 准备工作 1.1 服务器要求 搭建以前，一定要确认自己的vps是否开通了25端口，以及是否可以设置rDNS，否则下面不用看了。我使用的racknerd的VPS，一年只需要10美元左右，符合搭建的要求，推荐大家在这家注册使用。
+使用Maddy搭建邮箱服务挺方便，这里记录下，供以后再搭建时使用。 注意将文中example.org域名替换成自己的1.2 域名设置 先设置二级域名，mx.example.com，A记录和AAAA记录分别指向服务器ipv4地址和ipv6地址。然后设置根域名(@)mx记录，指向mx.example.com
+2 安装maddy 2.1 下载 这里使用Maddy编译好的文件进行。先下载并解压缩（目前是0.5.4版本）:
+1 2 3 4 5 6 7 8 wget https://github.com/foxcpp/maddy/releases/download/v0.5.4/maddy-0.5.4-x86_64-linux-musl.tar.zst apt install zstd tar --use-compress-program=unzstd -xvf maddy-0.5.4-x86_64-linux-musl.tar.zst cd maddy-0.5.4-x86_64-linux-musl mv maddy maddyctl /usr/local/bin/ mkdir /etc/maddy &amp;&amp; mv maddy.conf /etc/maddy/ mv systemd/*.service /usr/lib/systemd/system/ mv man/*.1 /usr/share/man/man1/ &amp;&amp; mv man/*.5 /usr/share/man/man5/ 运行tree命令，可以看到maddy目录结构很简单，主要是maddy和maddyctl两个可执行文件和maddy.conf配置文件
+2.2 添加程序用户 为Maddy程序添加一个单独的用户并且授予权限:
+1 2 useradd -mrU -s /sbin/nologin -c &#34;maddy mail server&#34; maddy chown -R maddy:maddy /usr/local/bin/maddy* /etc/maddy 2.]]></description>
+</item>
+</channel>
+</rss>

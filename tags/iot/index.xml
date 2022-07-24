@@ -1,0 +1,27 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>iot - Tag - Blog</title>
+        <link>https://sudo.by/tags/iot/</link>
+        <description>iot - Tag - Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 12 Oct 2019 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sudo.by/tags/iot/" rel="self" type="application/rss+xml" /><item>
+    <title>如何在ESXI中安装Home Assistant</title>
+    <link>https://sudo.by/install-homeassistant-on-esxi/</link>
+    <pubDate>Sat, 12 Oct 2019 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/install-homeassistant-on-esxi/</guid>
+    <description><![CDATA[家里有个ESXI虚拟化平台的确是方便，除了可以使用软路由，很多系统都可以安装进去，这里简单说下如何在ESXI中安装Home Assistant，网上大部分教程都是在Linux中的docker里跑HA。
+视频演示过程：youtube, B站
+首先到官网下载HA的虚拟机文件
+下载vmdk文件
+将解压缩出来的文件上传到esxi，打开esxi的SSH权限，进入后台，使用下面的命令将vmdk文件转换为esxi可以使用的文件。
+1 vmkfstools -i hassxxx.vmdk 1.vmdk 随后创建虚拟机
+新建虚拟机
+按照框框里的选择好
+然后下一步，下一步。建立好虚拟机后，开始调整虚拟机配置。调整配置很重要。
+删除CD/DVD驱动器，然后添加硬盘，添加现有硬盘，选择上面转换好的1.vmdk文件。删除默认分配的硬盘。 点击硬盘左侧的三角，控制器位置选择IDE控制器0，右侧选择主要。 虚拟机选项下面的引导选项，选择EFI。 记得调整cpu和内存数量。 完成上述的配置调整后，就可以给虚拟机通电了，随后访问hassio.local:8123就能打开HA的首页了。
+如果访问hassio.local:8123无法打开这个页面，等待5-10分钟再访问
+在首页等待一会儿之后，就会自动跳转到管理员设置页面
+以上就是安装的粗略过程。]]></description>
+</item>
+</channel>
+</rss>

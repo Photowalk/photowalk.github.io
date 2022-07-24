@@ -1,0 +1,73 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>vps - Tag - Blog</title>
+        <link>https://sudo.by/tags/vps/</link>
+        <description>vps - Tag - Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 12 Jun 2022 17:55:47 &#43;0800</lastBuildDate><atom:link href="https://sudo.by/tags/vps/" rel="self" type="application/rss+xml" /><item>
+    <title>What Is Sudo</title>
+    <link>https://sudo.by/what-is-sudo/</link>
+    <pubDate>Sun, 12 Jun 2022 17:55:47 &#43;0800</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/what-is-sudo/</guid>
+    <description><![CDATA[注意本文环境基于Ubuntu20.04系统既然本站域名包含sudo，那么大家就一起了解下sudo这个命令吧。
+sudo这个程序，是由 Bob Coggeshall 和 Cliff Spencer 在上世纪80年左右在一台运行4.1 BSD的机器VAX-11/750上实现的。在随后的岁月中，逐渐演变成了现在的样子。
+首先，当你安装Ubuntu的桌面版或者服务器版本的过程中，系统会让用户输入一个用户名以及密码（很多VPS默认使用root用户），而用户输入的用户名不能是root，这是因为Ubuntu系统中root用户是自带的，并且在你安装好系统后，root用户默认是非激活状态，这也就是有些人在刚装好系统后不知道我的root用户默认密码是多少的原因。
+如果实在想激活root用户，执行 sudo -i ，然后执行 passwd 设置个密码就激活了root用户。
+如果后悔了，可以运行 sudo passwd -dl root 就可以disable root用户了。运行 su 会发现，进不去root用户。
+那么如何使用root的权限来执行命令呢？sudo可以解决这个问题。其实当你进入刚刚安装好的系统后，Ubuntu默认将你创建的用户加入到了sudo用户组，也就是拥有了root的所有权限。
+1. 举个栗子 我们通过个例子来说一下，在我的机器上已经有一个叫 test 的用户，并且在sudo组当中，所以test用户可以执行root的所有可执行的命令。
+1.1 创建用户 首先在机器上先添加一个叫tristan的用户，执行 sudo adduser tristan ,输入密码后一路回车，然后执行 su - tristan 来切换到刚刚创建的用户tristan，接着执行 sudo apt update ，可以看到，新创建的tristan用户是无法使用root权限的，因为不在sudo用户组当中，执行groups可以看到tristan仅仅在tristan这个用户组当中。
+1.2 拉人入伙 此时，切换回有sudo权限的用户 su - test，执行 sudo groups tristan ，可以看到tristan只在他自己的组当中，然后执行 sudo adduser tristan sudo 或者 sudo usermod -aG sudo tristan 来将tristan这个用户加入到sudo组当中，再次执行 sudo groups tristan ，可以看到tristan这个用户已经被加入到了sudo组中，拥有了root权限。]]></description>
+</item>
+<item>
+    <title>Setting up your own Matrix Synapse  service on VPS</title>
+    <link>https://sudo.by/setting-up-your-own-matrix-synapse-service-on-vps/</link>
+    <pubDate>Tue, 24 May 2022 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/setting-up-your-own-matrix-synapse-service-on-vps/</guid>
+    <description><![CDATA[For the past one month, I&rsquo;ve been digging around the internet about the decentralized fediverse community. Platforms like Mastodon, Matrix Synapse, Pixelfed etc are the open-source implementations of twitter, IMs like telegram Signal and instagram, and more importantly these platforms are all decentralized, which means your posts/pics/blog/account belongs to yourself, and won&rsquo;t be deleted by those BIG companies for no reason, especially those stupid companies in China like weibo, bilibili, douyin etc.]]></description>
+</item>
+<item>
+    <title>使用Maddy搭建自己的邮箱服务</title>
+    <link>https://sudo.by/setup-mail-server-on-vps/</link>
+    <pubDate>Thu, 19 May 2022 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/setup-mail-server-on-vps/</guid>
+    <description><![CDATA[1 准备工作 1.1 服务器要求 搭建以前，一定要确认自己的vps是否开通了25端口，以及是否可以设置rDNS，否则下面不用看了。我使用的racknerd的VPS，一年只需要10美元左右，符合搭建的要求，推荐大家在这家注册使用。
+使用Maddy搭建邮箱服务挺方便，这里记录下，供以后再搭建时使用。 注意将文中example.org域名替换成自己的1.2 域名设置 先设置二级域名，mx.example.com，A记录和AAAA记录分别指向服务器ipv4地址和ipv6地址。然后设置根域名(@)mx记录，指向mx.example.com
+2 安装maddy 2.1 下载 这里使用Maddy编译好的文件进行。先下载并解压缩（目前是0.5.4版本）:
+1 2 3 4 5 6 7 8 wget https://github.com/foxcpp/maddy/releases/download/v0.5.4/maddy-0.5.4-x86_64-linux-musl.tar.zst apt install zstd tar --use-compress-program=unzstd -xvf maddy-0.5.4-x86_64-linux-musl.tar.zst cd maddy-0.5.4-x86_64-linux-musl mv maddy maddyctl /usr/local/bin/ mkdir /etc/maddy &amp;&amp; mv maddy.conf /etc/maddy/ mv systemd/*.service /usr/lib/systemd/system/ mv man/*.1 /usr/share/man/man1/ &amp;&amp; mv man/*.5 /usr/share/man/man5/ 运行tree命令，可以看到maddy目录结构很简单，主要是maddy和maddyctl两个可执行文件和maddy.conf配置文件
+2.2 添加程序用户 为Maddy程序添加一个单独的用户并且授予权限:
+1 2 useradd -mrU -s /sbin/nologin -c &#34;maddy mail server&#34; maddy chown -R maddy:maddy /usr/local/bin/maddy* /etc/maddy 2.]]></description>
+</item>
+<item>
+    <title>让你的网站使用cloudflare全球加速</title>
+    <link>https://sudo.by/%E8%AE%A9%E4%BD%A0%E7%9A%84%E7%BD%91%E7%AB%99%E4%BD%BF%E7%94%A8cloudflare%E5%85%A8%E7%90%83%E5%8A%A0%E9%80%9F/</link>
+    <pubDate>Sat, 05 Oct 2019 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/%E8%AE%A9%E4%BD%A0%E7%9A%84%E7%BD%91%E7%AB%99%E4%BD%BF%E7%94%A8cloudflare%E5%85%A8%E7%90%83%E5%8A%A0%E9%80%9F/</guid>
+    <description><![CDATA[使用免费版本的cloudflare在大陆都被称为cdn减速，但是从我实际使用来说，减速效果不明显，但是却可以大大提升全球的访问速度。设置合理可以严重降低服务器的负担，对于服务器配置不好，vps本身直连国内速度本身就很慢，以及vps ip被封的人来说，是个神器。
+这里，就如何设置wordpress来说下cloudflare的基础设置。先放个效果图，可以看到绝大多数网站请求都使用了cloudflare的cache。
+深色是使用的cache，浅色是从我的服务器处理的请求
+首先，注册cloudflare，然后修改你域名的两个dns为cloudflare提供给你的。一般十分钟搞定。
+打开cloudflare管理界面，可以看到上面有不少可设置选项，在上面先找到page rules。
+找到Page rules
+免费版本可以使用三条规则，对于wordpress，我感觉两条就足够了。
+第一条告诉cloudflare不缓存wordpress的管理员界面，并且应用上了几条cloudflare的安全检查，可以阻止一些有危险行为的访问。 如果你不是wordpress程序，可以替换成你使用的程序的管理uri。
+第二条，开启除第一条以外所有内容的缓存，缓存时间7天，这样可以极大减轻服务器的负担。尤其是图片，js，css文件等，效果很明显。假如你对某篇文章进行了编辑，可以找到Caching，点击下面的Custom Purge，输入要强制更新的页面地址，这样cloudflare会获取最新修改后的页面，然后在你自己浏览器此页面的URL后面添加个?号，让浏览器也强制刷新缓存。最后记得把首页缓存也purge一下。但是很多清况下，即使你purge了页面，清除了浏览器缓存，但是页面依然没更新，这一点比较恼人。
+注意，Rules是有顺序关系的，不能搞乱。Page rules设置就此完毕。
+其余的cloudflare的设置，这里提一下
+可以将SSL/TLS中Edge Certificates下面的Always Use HTTPS打开。并且将HSTS打开。Automatic HTTPS Rewrites打开。 将Speed中Optimization下面的Auto Minify右侧的Javascript, CSS, HTML全部勾选，并且打开下面的Brotli和Rocket Loader。 将Caching下面的Always Online打开，这样你的服务器短期出现故障，比如重启之类的活动时候，网站访问几乎不受影响。 关于网站使用cloudflare是基本设置就是这样了，其余的要么收费，要么我也看不懂。后续可能会研究下Firewall及Workers的详细用法。网上关于网站测速评分工具看看就好，毕竟这个和你网站使用的图片，模板，插件有很大关系。]]></description>
+</item>
+<item>
+    <title>VULTR VPS配置笔记</title>
+    <link>https://sudo.by/vultr-vps%E9%85%8D%E7%BD%AE%E7%AC%94%E8%AE%B0/</link>
+    <pubDate>Mon, 27 Jun 2016 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/vultr-vps%E9%85%8D%E7%BD%AE%E7%AC%94%E8%AE%B0/</guid>
+    <description><![CDATA[购买vultr的VPS差不多一年，用下来还算稳定，开始的大部分时间用来架设SS使用，最近趁着8折，把配置升到了1G内存版本的，放了三个wp在上面，很无奈的是由于MYSQL 5.7.12的bug，vps开机40分钟内存就满了，网上找了一堆优化的文章，设置下来还是不管用，谁知升级到MYSQL 5.7.13后问题自己解决，现在内存使用量稳定在不到300M，很舒坦。
+此贴主要记录折腾了几次的VPS的设置，主要参考的digitalocean上的文章，这一点上vultr比DO差太多了。关于支付问题，使用的是中信银行的VISA卡，网上就可以申请，很方便。
+这一步是VPS申请到后的第一步，很简单，可以参考DO的这篇文章，前面的关于登陆的一概略过，我还是喜欢还是使用密码登陆（关键使用WIN10系统），后面的关于ufw的配置需要看下，也很简单。 第二步就是安装NGINX, MYSQL, PHP了。 第三步，既然有了Let’s Encrypt这个免费的HTTPS福利，用起来吧。 添加对HTTP/2的支持，其实在nginx的网站配置文件中SSL部分添加http2即可，可以使用Chrome插件HTTP/2 and SPDY indicator来检查是否生效，但前提需要翻墙访问你的网站，或者访问这个网站来检测，貌似也需要翻墙，实在不行，在VPS命令行执行 openssl s_client -connect www.yourdomain.com:443 -nextprotoneg ‘’来检测。 这一步就是解决如何让nginx支持多个网站了，可以直接复制第一个网站的nginx配置文件，将配置文件有关ssl，server_name及root的配置修改一下，链接到sites-enabled里面，然后重新获取let&rsquo;s encrypt证书即可。注意，新网站的nginx配置文件中listen后的default_server要去掉，有两处。 这一步开始安装wordpress了，还有一些安全配置，具体可以参考这篇文章，值得细看。 愿意安装phpmyadmin的可以看这里，文中nginx比较老，将phpmyadmin的目录链接到某网站root下就可以了，比如 ln -s /usr/share/phpmyadmin /var/www/html 关于MYSQL的一些优化可以使用这个脚本，里面会提一些建议，这个网站专门讲解了MYSQL的优化。其中一篇帖子讲解了影响MYSQL性能的几个重要参数。使用命令mysqladmin -u root -p variables &raquo; log可以查看你VPS上MYSQL的参数配置情况。 网上还有一个MYSQL的内存占用计算器，貌似不准。但可以看出影响MYSQL性能的参数有哪些。 目前就是这些了，关键是MYSQL最新版本不耗内存，还是使用了MYSQL。]]></description>
+</item>
+</channel>
+</rss>

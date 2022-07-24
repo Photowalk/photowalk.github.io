@@ -1,0 +1,15 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>onedrive - Tag - Blog</title>
+        <link>https://sudo.by/tags/onedrive/</link>
+        <description>onedrive - Tag - Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 15 Nov 2019 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sudo.by/tags/onedrive/" rel="self" type="application/rss+xml" /><item>
+    <title>使用qnap nas的hbs 3同步onedrive googledrive等网盘内容</title>
+    <link>https://sudo.by/%E4%BD%BF%E7%94%A8qnap-nas%E7%9A%84hbs-3%E5%90%8C%E6%AD%A5onedrive-googledrive%E7%AD%89%E7%BD%91%E7%9B%98%E5%86%85%E5%AE%B9/</link>
+    <pubDate>Fri, 15 Nov 2019 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/%E4%BD%BF%E7%94%A8qnap-nas%E7%9A%84hbs-3%E5%90%8C%E6%AD%A5onedrive-googledrive%E7%AD%89%E7%BD%91%E7%9B%98%E5%86%85%E5%AE%B9/</guid>
+    <description><![CDATA[QNAP还是不错的，就是界面做的一般般。视频默认油管的，B站地址。]]></description>
+</item>
+</channel>
+</rss>

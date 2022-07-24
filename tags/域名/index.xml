@@ -1,0 +1,19 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>域名 - Tag - Blog</title>
+        <link>https://sudo.by/tags/%E5%9F%9F%E5%90%8D/</link>
+        <description>域名 - Tag - Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 01 Nov 2019 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sudo.by/tags/%E5%9F%9F%E5%90%8D/" rel="self" type="application/rss+xml" /><item>
+    <title>域名如何开启HTTPS,HTTP/2以及HSTS</title>
+    <link>https://sudo.by/how-to-enable-https-http2-hsts/</link>
+    <pubDate>Fri, 01 Nov 2019 00:00:00 &#43;0000</pubDate>
+    <author>Tristan</author>
+    <guid>https://sudo.by/how-to-enable-https-http2-hsts/</guid>
+    <description><![CDATA[对于站长，配置域名的https, http/2以及hsts是家常便饭，之前的博客说过，这里使用免费的let&rsquo;s encrypt来演示，环境是ubuntu18.04 + nginx，域名使用lijie.org，下面的命令替换成自己的域名即可。
+开启https 1 2 3 4 5 6 7 8 sudo add-apt-repository ppa:certbot/certbot #将let&#39;s encrypt加入ubuntu软件源,ubuntu 18.04及之前版本，ubuntu20.04方法如下 sudo apt-get update #更新列表 sudo apt-get install python-certbot-nginx #安装certbot,ubuntu 18.04及之前版本，ubuntu20.04方法如下 apt install certbot python3-certbot-nginx #ubuntu20.04开始直接安装就行，不需要另外添加lets encrypt源。 sudo ufw allow &#39;Nginx Full&#39; #将80, 443端口开启，加入防火墙 sudo certbot --nginx -d lijie.org -d www.lijie.org #使用certbot给两个域名申请ssl 执行上述命令会提示：
+Please choose whether or not to redirect HTTP traffic to HTTPS, removing HTTP access.
+-&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&ndash;
+1: No redirect - Make no further changes to the webserver configuration.]]></description>
+</item>
+</channel>
+</rss>
